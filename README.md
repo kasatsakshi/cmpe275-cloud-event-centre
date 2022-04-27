@@ -1,1 +1,1 @@
-# cmpe275-cloud-event-centre
+# Cloud Event Center
