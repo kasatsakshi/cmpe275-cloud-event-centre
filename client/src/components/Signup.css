@@ -1,0 +1,70 @@
+.logo{
+  width: 100px;
+}
+
+.leftdiv{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+  align-items: center;
+  margin-top: 10%;
+}
+
+.leftdiv-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.leftdiv-text{
+  margin-top: 15px;
+}
+
+.rightdiv{
+  width: 50%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.email-input {
+  flex: 1;
+  min-width: 40%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.email-button {
+  flex: 1;
+  min-width: 40%;
+  margin: 10px 0;
+  padding: 10px;
+  text-align: left;
+  background-color: black;
+  color: white;
+}
+
+.signin-google-button {
+  flex: 1;
+  min-width: 40%;
+  margin: 10px 0;
+  padding: 10px;
+  text-align: left;
+  background-color: white;
+}
+
+.divider {
+  color: #6f7287;
+  border: 1px solid #a9a8b3;
+  border-radius: 100px;
+  background: #fff;
+  position: relative;
+  display: inline-block;
+  padding: 0 12px 3px;
+  width: 20px;
+  text-align: center;
+  margin: 20px 100px;
+}
