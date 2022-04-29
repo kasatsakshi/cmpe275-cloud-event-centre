@@ -1,27 +1,44 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Signup.css';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 
 function Signup() {
   return (
-    <div>
-      <div className='leftdiv'>
-        <div className='leftdiv-content'>
-          <Link to="/">
-            <img className='logo' src='eventcloudlogo.png' alt='Events' />
-          </Link>
-          <h1 className='leftdiv-text'>Create an account</h1>
-          <form className='form'>
-            <input className='email-input' placeholder='Email Address' />
-            <button className='email-button'>Continue</button>
-          </form>
-          <div className='divider'>or</div>
-          <button className='signin-google-button'>Sign in with Google</button>
-        </div>
+    <div class="container" id="container">
+      <div class="form-container sign-in-container">
+        <form action="#">
+          <h1>Sign in</h1>
+          <div class="social-container">
+            <a class="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="#">
+              <img src="https://img.icons8.com/color/16/000000/google-logo.png" />
+            </a>
+          </div>
+          <span>or use your account</span>
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <a href="#">Forgot your password?</a>
+          <button>Sign In</button>
+        </form>
       </div>
-      <div className='rightdiv'></div>
+      <div class="form-container sign-up-container">
+        <form>
+          {/* <div class="overlay-panel overlay-right"> */}
+          <h1>Hello, are you new here!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <Link to='/register'><button id="signUp">Sign Up</button></Link>
+          <div class="or-container">
+            <div class="line-separator"></div>
+            <div class="or-label">or sign up with google</div>
+            <div class="line-separator"></div>
+          </div>
+          {/* </div> */}
+          <div class="social-container">
+            <a class="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="#">
+              <img src="https://img.icons8.com/color/16/000000/google-logo.png" />
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
