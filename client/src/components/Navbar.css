@@ -1,0 +1,50 @@
+.navbar {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.navbar-logo {
+  width: 80px;
+  /* margin-left: 100px; */
+  margin-right: 10px;
+}
+
+.navbar-rightSection{
+  align-items: center;
+  display: flex;
+  position: absolute;
+  right: 50px;
+}
+
+.button{
+  height: 35px;
+  margin-right: 20px;
+  background: none;
+  border-radius: 10px;
+  border-color: white;
+  font-size: 12px;
+  font-weight: bold;
+  color: #84CDEB;
+  width: 150px;
+}
+
+.button:hover {
+  background-color: lightgrey;
+}
+
+.register-button{
+  height: 35px;
+  margin-right: 20px;
+  background: none;
+  border-radius: 10px;
+  border-color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 150px;
+  color: #84CDEB;
+}
