@@ -1,0 +1,14 @@
+server:
+  address: 0.0.0.0
+  port: 80
+
+### Prod DB
+spring:
+  datasource:
+    url: jdbc:mysql://db-275.csrl9wbmcemv.us-west-1.rds.amazonaws.com/event_centre
+    username: admin
+    password: admin275
+
+  jpa:
+    hibernate:
+      ddl-auto: update
