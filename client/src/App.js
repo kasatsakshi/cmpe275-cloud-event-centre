@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Signup from './components/Signup';
 import Register from './components/Register';
+import Oauth from './components/Oauth';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/register" element={<Register />} />
+        </Routes>
+        <Routes>
+          <Route path="/oauth" element={<Oauth />} />
         </Routes>
       </div>
     </Router>
