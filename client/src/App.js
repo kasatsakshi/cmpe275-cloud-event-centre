@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Signup from './components/Signup';
 import Register from './components/Register';
 import Oauth from './components/Oauth';
+import CreateEvent from './components/CreateEvent';
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/oauth" element={<Oauth />} />
+        </Routes>
+        <Routes>
+          <Route path="/createevent" element={<CreateEvent />} />
         </Routes>
       </div>
     </Router>
