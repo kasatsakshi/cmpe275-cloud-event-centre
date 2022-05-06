@@ -9,7 +9,14 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^4.20.2",
+    "aos": "^2.3.4",
+    "express": "^4.17.1",
+    "moment": "^2.29.3",
+    "bootstrap": "^4.4.1",
     "react": "^18.1.0",
+    "react-bootstrap": "^1.6.0",
+    "react-date-range": "^1.4.0",
     "react-dom": "^18.1.0",
     "react-google-login": "^5.2.2",
     "react-router-dom": "^6.3.0",
@@ -44,5 +51,6 @@
   "main": "index.js",
   "devDependencies": {},
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "proxy":"http://localhost:5000"
 }
