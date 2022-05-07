@@ -20,7 +20,7 @@ function CreateEvent() {
   };
 
   return (
-    <div class="container" id="container">
+    <div class="container" id="container" style={{marginTop:'500px'}}>
       <div className='form-container register-container'>
         <form action="#">
           <h1>Register Details</h1>

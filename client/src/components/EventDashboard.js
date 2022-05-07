@@ -9,17 +9,23 @@ function EventDashboard() {
     { 
         name:'event1',
         location:'san jose',
-        type:'active'
+        type:'active',
+        startDate: '2022-05-12',
+        endDate: '2022-05-14'
     },
     { 
         name:'event2',
         location:'remote',
-        type:'not active'
+        type:'not active',
+        startDate: '2022-05-09',
+        endDate: '2022-05-10'
     },
     { 
         name:'event3',
         location:'remote',
-        type:'active'
+        type:'active',
+        startDate: '2022-05-03',
+        endDate: '2022-05-12'
     }
   ];
 
@@ -31,7 +37,16 @@ function EventDashboard() {
   const [location, setLocation] = useState('all')
   const [searchlockey, setsearchlockey] = useState('');
   const[type , settype]=useState('all')
-  
+  const [fromDate, setFromDate] = useState("");
+
+  const assignFromDate = e => {
+    console.log(e.target.value);
+    setFromDate(e.target.value);
+    const events = duplicatehotes.filter(a => new Date(a.startDate) - new Date > 0);
+     sethotels(events);
+    
+  };
+
 
   useEffect(() => {
     try {
@@ -52,7 +67,11 @@ function EventDashboard() {
     const dupdate = duplicatehotes.filter(room=>room.name.toLowerCase().includes(searchkey))
     sethotels(dupdate)
   }
-
+  function filterByStartDate()
+{
+  const events = duplicatehotes.filter(a => new Date(a.startDate) - new Date > 0);
+  sethotels(events);
+}
   function filterByLocation(e)
   {
     setLocation(e)
@@ -81,6 +100,7 @@ function EventDashboard() {
   }
 
   return (
+    <body style={{marginTop:'50px'}}>
     <div className="mt-5">
       <div className="cont" style={{height:'100px'}}>
         <div className="row bs p-3 m-5">
@@ -119,6 +139,22 @@ function EventDashboard() {
               
             </select>
           </div>
+
+          <div className="col-md-3">
+        <div className="form-group">
+          <span style={{ opacity: "0.6", fontSize: "13px" }}>from</span>
+          <input
+            type="date"
+            name="from"
+            id="startdate"
+            min={new Date().toLocaleDateString('en-ca')}
+            value={fromDate}
+            onChange={assignFromDate}
+            className="form-control datepicker"
+            style={{ width: "150px" }}
+          />
+        </div>
+      </div>
         </div>
       </div>
 
@@ -147,6 +183,7 @@ function EventDashboard() {
       </div>
       
     </div>
+    </body>
   );
 }
 
