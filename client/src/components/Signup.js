@@ -4,7 +4,7 @@ import './Signup.css';
 
 function Signup() {
   return (
-    <div class="container" id="container">
+    <div class="container" id="container" style={{width:"800px"}}>
       <div class="form-container sign-in-container">
         <form action="#">
           <h1>Sign in</h1>
