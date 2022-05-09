@@ -23,7 +23,7 @@ function CreateEvent() {
     <div class="container" id="container" style={{marginTop:'500px'}}>
       <div className='form-container register-container'>
         <form action="#">
-          <h1>Register Details</h1>
+          <h1>Create Event</h1>
           <div className='register-radio'>
             {/* <FormLabel className='register-label' id="account-type">Account Type</FormLabel> */}
             <RadioGroup
