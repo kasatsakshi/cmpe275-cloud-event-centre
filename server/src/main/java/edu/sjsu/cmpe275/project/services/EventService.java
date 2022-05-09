@@ -36,6 +36,11 @@ public class EventService {
 		return event.isPresent() ? event.get() : null;
 	}
 
+	public List<Event> getAllEvents() {
+		List<Event> events = eventDao.findAll();
+		return events;
+	}
+
 	/**
 	 * @param title
 	 * @param startTime
@@ -140,6 +145,25 @@ public class EventService {
 		return event;
 	}
 
+	/**
+	 * Add new entry
+	 * 
+	 * @param event
+	 * @param title
+	 * @param startTime
+	 * @param endTime
+	 * @param deadline
+	 * @param minimumParticipants
+	 * @param maximumParticipants
+	 * @param fee
+	 * @param admissionPolicy
+	 * @param creator
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(Event event, String title, LocalDateTime startTime, LocalDateTime endTime,
 			LocalDateTime deadline, Integer minimumParticipants, Integer maximumParticipants, Integer fee,
 			AdmissionPolicy admissionPolicy, User creator, Optional<String> description, Optional<String> street,
@@ -167,6 +191,24 @@ public class EventService {
 		event.setAddress(address);
 	}
 
+	/**
+	 * Update existing entry
+	 * 
+	 * @param event
+	 * @param title
+	 * @param startTime
+	 * @param endTime
+	 * @param deadline
+	 * @param minimumParticipants
+	 * @param maximumParticipants
+	 * @param fee
+	 * @param admissionPolicy
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(Event event, Optional<String> title, Optional<LocalDateTime> startTime,
 			Optional<LocalDateTime> endTime, Optional<LocalDateTime> deadline, Optional<Integer> minimumParticipants,
 			Optional<Integer> maximumParticipants, Optional<Integer> fee, Optional<AdmissionPolicy> admissionPolicy,
@@ -190,7 +232,10 @@ public class EventService {
 			event.setAdmissionPolicy(admissionPolicy.get());
 		if (description.isPresent())
 			event.setDescription(description.get());
-		Address address = new Address();
+
+		Address address = event.getAddress();
+		if (address == null)
+			address = new Address();
 		if (street.isPresent())
 			address.setStreet(street.get());
 		if (city.isPresent())

@@ -50,6 +50,21 @@ public class EventController {
 	}
 
 	/**
+	 * Endpoint for fetching all events
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/all")
+	public ResponseEntity<?> getAllEvents() {
+		List<Event> events = eventService.getAllEvents();
+		if (events != null) {
+			return new ResponseEntity<>(events, HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	/**
 	 * Endpoint for creating event
 	 * 
 	 * @param title

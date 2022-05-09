@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import edu.sjsu.cmpe275.project.dao.UserDao;
 import edu.sjsu.cmpe275.project.models.Address;
-//import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AccountType;
 
@@ -82,6 +81,22 @@ public class UserService {
 		return user.isPresent() ? user.get() : null;
 	}
 
+	/**
+	 * Add new entry
+	 * 
+	 * @param user
+	 * @param fullName
+	 * @param screenName
+	 * @param email
+	 * @param password
+	 * @param gender
+	 * @param accountType
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(User user, String fullName, String screenName, String email, String password,
 			Optional<String> gender, AccountType accountType, Optional<String> description, Optional<String> street,
 			Optional<String> city, Optional<String> state, Optional<String> zip) {
@@ -108,6 +123,19 @@ public class UserService {
 		user.setAddress(address);
 	}
 
+	/**
+	 * Update existing entry
+	 * 
+	 * @param user
+	 * @param fullName
+	 * @param screenName
+	 * @param gender
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(User user, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
@@ -119,7 +147,10 @@ public class UserService {
 			user.setEmail(gender.get());
 		if (description.isPresent())
 			user.setDescription(description.get());
-		Address address = new Address();
+
+		Address address = user.getAddress();
+		if (address == null)
+			address = new Address();
 		if (street.isPresent())
 			address.setStreet(street.get());
 		if (city.isPresent())
@@ -130,17 +161,4 @@ public class UserService {
 			address.setZip(zip.get());
 		user.setAddress(address);
 	}
-
-//	public User registerEvent(Long userId, Long eventId) {
-//		User user = findUserById(userId);
-//		Event event = eventService.findEventById(eventId);
-//		List<Event> registeredEvents = user.getEventsRegistered();
-//		if (registeredEvents.contains(event)) {
-//			return null;
-//		} else
-//			registeredEvents.add(event);
-//		user.setEventsRegistered(registeredEvents);
-//		userDao.save(user);
-//		return user;
-//	}
 }
