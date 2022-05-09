@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
+import axios from "axios";
 
 function EventDashboard() {
 
 
-  const rooms = [
+  const roomss = [
     { 
         name:'event1',
         location:'san jose',
@@ -62,10 +63,13 @@ function EventDashboard() {
   useEffect(() => {
     try {
       setloading(true);
-      //const rooms = await (await axios.get("/api/rooms/getallrooms")).data;
-      console.log(rooms);
-      sethotels(rooms);
-      setduplicatehotes(rooms)
+      axios.get("/api/event/all").then((response) => {
+        sethotels(response.data);
+      });
+      //const rooms = axios.get("/api/event/all");
+      console.log(hotels);
+      //sethotels(rooms);
+      setduplicatehotes(hotels)
       setloading(false);
     } catch (error) {
       console.log(error);
@@ -75,7 +79,7 @@ function EventDashboard() {
 
   function filterBySearch()
   {
-    const dupdate = duplicatehotes.filter(room=>room.name.toLowerCase().includes(searchkey))
+    const dupdate = duplicatehotes.filter(room=>room.title.toLowerCase().includes(searchkey))
     sethotels(dupdate)
   }
   function filterByStartDate()
@@ -200,11 +204,11 @@ function EventDashboard() {
                 <div class="row">
                 <div class="card" style={{width:'1002px'}}>
                 <div class="card-body">
-                  <h5 class="card-title">{room.name}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">{room.startDate}</h6>
+                  <h5 class="card-title">{room.title}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{room.startTime}</h6>
                   <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="card-link">{room.location}</a>
-                  <a href="#" class="card-link">{room.type}</a>
+                  <a href="#" class="card-link">{room.state}</a>
+                  <a href="#" class="card-link">{room.description}</a>
                 </div>
               </div>
               </div>
