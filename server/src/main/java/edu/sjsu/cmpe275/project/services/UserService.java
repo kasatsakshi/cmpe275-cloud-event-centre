@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+//import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,12 @@ public class UserService {
 		return response;
 	}
 
-	public User updateUser(Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
+	public User updateUser(Long id, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
-		User user = new User();
+		User user = findUserById(id);
+		if (user == null)
+			return null;
 		setValues(user, fullName, screenName, gender, description, street, city, state, zip);
 		User response = userDao.save(user);
 
@@ -78,6 +81,22 @@ public class UserService {
 		return user.isPresent() ? user.get() : null;
 	}
 
+	/**
+	 * Add new entry
+	 * 
+	 * @param user
+	 * @param fullName
+	 * @param screenName
+	 * @param email
+	 * @param password
+	 * @param gender
+	 * @param accountType
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(User user, String fullName, String screenName, String email, String password,
 			Optional<String> gender, AccountType accountType, Optional<String> description, Optional<String> street,
 			Optional<String> city, Optional<String> state, Optional<String> zip) {
@@ -104,6 +123,19 @@ public class UserService {
 		user.setAddress(address);
 	}
 
+	/**
+	 * Update existing entry
+	 * 
+	 * @param user
+	 * @param fullName
+	 * @param screenName
+	 * @param gender
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 */
 	private void setValues(User user, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
@@ -115,7 +147,10 @@ public class UserService {
 			user.setEmail(gender.get());
 		if (description.isPresent())
 			user.setDescription(description.get());
-		Address address = new Address();
+
+		Address address = user.getAddress();
+		if (address == null)
+			address = new Address();
 		if (street.isPresent())
 			address.setStreet(street.get());
 		if (city.isPresent())

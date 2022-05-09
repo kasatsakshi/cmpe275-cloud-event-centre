@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe275.project.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -14,12 +15,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "EVENTS")
-@JsonPropertyOrder({ "id", "title", "description", "fee", "admissionPolicy", "startTime", "endTime", "deadline", "creatorId", "minimumParticipants", "maximumParticipants", "address" })
+@JsonPropertyOrder({ "id", "title", "description", "fee", "admissionPolicy", "startTime", "endTime", "deadline",
+		"creatorId", "minimumParticipants", "maximumParticipants", "address" })
 public class Event {
 
 	@Id
@@ -60,6 +63,10 @@ public class Event {
 	@JoinColumn(name = "creatorId")
 	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password" })
 	private User creator;
+
+	@ManyToMany(mappedBy = "eventsRegistered", fetch = FetchType.EAGER)
+	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password" })
+	private List<User> participants;
 
 	/**
 	 * @return the id
@@ -220,6 +227,20 @@ public class Event {
 	 */
 	public void setCreator(User creator) {
 		this.creator = creator;
+	}
+
+	/**
+	 * @return the participants
+	 */
+	public List<User> getParticipants() {
+		return participants;
+	}
+
+	/**
+	 * @param participants the participants to set
+	 */
+	public void setParticipants(List<User> participants) {
+		this.participants = participants;
 	}
 
 }

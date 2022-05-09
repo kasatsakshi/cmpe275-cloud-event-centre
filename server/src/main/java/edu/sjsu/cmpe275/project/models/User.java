@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe275.project.types.AccountType;
-//import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -14,13 +13,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-//import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "USERS")
-@JsonPropertyOrder({ "id", "fullName", "screenName", "description", "accountType", "gender", "email", "password", "team", "opponents" })
+@JsonPropertyOrder({ "id", "fullName", "screenName", "description", "accountType", "gender", "email", "password",
+		"team", "opponents" })
 public class User {
 
 	@Id
@@ -52,12 +54,13 @@ public class User {
 	private Address address;
 
 	@OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({ "creator", "address", })
+	@JsonIgnoreProperties({ "creator", "address", "participants" })
 	private List<Event> eventsCreated;
-
-//	@ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JsonIgnoreProperties({ "creator", "address",})
-//	private List<Event> eventsRegistered;
+//(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany
+	@JoinTable(name = "event_participation", joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
+	@JsonIgnoreProperties({ "creator", "address", "participants" })
+	private List<Event> eventsRegistered;
 
 	/**
 	 * @return the id
@@ -192,18 +195,18 @@ public class User {
 		this.eventsCreated = eventsCreated;
 	}
 
-//	/**
-//	 * @return the eventsRegistered
-//	 */
-//	public List<Event> getEventsRegistered() {
-//		return eventsRegistered;
-//	}
-//
-//	/**
-//	 * @param eventsRegistered the eventsRegistered to set
-//	 */
-//	public void setEventsRegistered(List<Event> eventsRegistered) {
-//		this.eventsRegistered = eventsRegistered;
-//	}
+	/**
+	 * @return the eventsRegistered
+	 */
+	public List<Event> getEventsRegistered() {
+		return eventsRegistered;
+	}
+
+	/**
+	 * @param eventsRegistered the eventsRegistered to set
+	 */
+	public void setEventsRegistered(List<Event> eventsRegistered) {
+		this.eventsRegistered = eventsRegistered;
+	}
 
 }
