@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+//import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import edu.sjsu.cmpe275.project.dao.UserDao;
 import edu.sjsu.cmpe275.project.models.Address;
+//import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AccountType;
 
@@ -46,10 +48,12 @@ public class UserService {
 		return response;
 	}
 
-	public User updateUser(Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
+	public User updateUser(Long id, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
-		User user = new User();
+		User user = findUserById(id);
+		if (user == null)
+			return null;
 		setValues(user, fullName, screenName, gender, description, street, city, state, zip);
 		User response = userDao.save(user);
 
@@ -126,4 +130,17 @@ public class UserService {
 			address.setZip(zip.get());
 		user.setAddress(address);
 	}
+
+//	public User registerEvent(Long userId, Long eventId) {
+//		User user = findUserById(userId);
+//		Event event = eventService.findEventById(eventId);
+//		List<Event> registeredEvents = user.getEventsRegistered();
+//		if (registeredEvents.contains(event)) {
+//			return null;
+//		} else
+//			registeredEvents.add(event);
+//		user.setEventsRegistered(registeredEvents);
+//		userDao.save(user);
+//		return user;
+//	}
 }

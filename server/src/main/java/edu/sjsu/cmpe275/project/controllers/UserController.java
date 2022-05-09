@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AccountType;
 
@@ -29,6 +30,9 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	EventService eventService;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -150,7 +154,7 @@ public class UserController {
 		if (user == null)
 			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
 		else
-			user = userService.updateUser(fullName, screenName, gender, description, street, city, state, zip);
+			user = userService.updateUser(id, fullName, screenName, gender, description, street, city, state, zip);
 		if (user != null)
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		else
