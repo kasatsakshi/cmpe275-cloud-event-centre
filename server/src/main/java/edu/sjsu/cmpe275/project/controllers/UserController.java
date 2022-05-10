@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
+import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
 
 @RestController
@@ -49,10 +50,10 @@ public class UserController {
 	@GetMapping(params = "id")
 	public ResponseEntity<?> getUserDetails(@RequestParam Long id) {
 		User user = userService.findUserById(id);
-		if (user != null) {
-			return new ResponseEntity<User>(user, HttpStatus.OK);
+		if (user == null) {
+			return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
 	/**
@@ -64,13 +65,15 @@ public class UserController {
 	@GetMapping(params = "email")
 	public ResponseEntity<?> getUserDetails(@RequestParam String email) {
 		User user = userService.findUserByEmail(email);
-		if (user != null) {
-			return new ResponseEntity<User>(user, HttpStatus.OK);
+		if (user == null) {
+			return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
 	/**
+	 * Register User
+	 * 
 	 * @param fullName
 	 * @param screenName
 	 * @param email
@@ -96,16 +99,19 @@ public class UserController {
 		User user = userService.findUserByEmail(email);
 		if (user != null)
 			return new ResponseEntity<>("Email is already in use.", HttpStatus.BAD_REQUEST);
-		else
+		else {
 			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, description,
 					street, city, state, zip);
-		if (user != null)
+			if (user == null)
+				return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<User>(user, HttpStatus.CREATED);
-		else
-			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 
 	/**
+	 * User Login
+	 * 
 	 * @param email
 	 * @param password
 	 * @return
@@ -119,20 +125,25 @@ public class UserController {
 		if (user == null)
 			return new ResponseEntity<>("No such user exists", HttpStatus.NOT_FOUND);
 		else {
-			if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
-				HashMap<String, Object> response = new HashMap<String, Object>();
-				response.put("id", user.getId());
-				response.put("fullName", user.getFullName());
-				response.put("screenName", user.getScreenName());
-				response.put("email", user.getEmail());
-				return new ResponseEntity<>(response, HttpStatus.OK);
+			if (user.getStatus() == AccountStatus.ACTIVE) {
+				if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+					HashMap<String, Object> response = new HashMap<String, Object>();
+					response.put("id", user.getId());
+					response.put("fullName", user.getFullName());
+					response.put("screenName", user.getScreenName());
+					response.put("email", user.getEmail());
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else
+					return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);
 			} else
-				return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<>("Please verify your email", HttpStatus.UNAUTHORIZED);
 		}
 
 	}
 
 	/**
+	 * Update user information
+	 * 
 	 * @param id
 	 * @param fullName
 	 * @param screenName
@@ -154,10 +165,31 @@ public class UserController {
 		if (user == null)
 			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
 		else
-			user = userService.updateUser(id, fullName, screenName, gender, description, street, city, state, zip);
+			user = userService.updateUser(user, fullName, screenName, gender, description, street, city, state, zip);
 		if (user != null)
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		else
 			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	/**
+	 * Activate user account after verification link
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@PutMapping("/activate/{id}")
+	public ResponseEntity<?> activateAccount(@PathVariable Long id) {
+		User user = userService.findUserById(id);
+		if (user == null)
+			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+		else if (user.getStatus() == AccountStatus.ACTIVE)
+			return new ResponseEntity<>("User is already active", HttpStatus.FORBIDDEN);
+		else {
+			user = userService.activateAccount(user, AccountStatus.ACTIVE);
+			if (user != null)
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

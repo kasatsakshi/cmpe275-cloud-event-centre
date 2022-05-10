@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import edu.sjsu.cmpe275.project.models.Event;
 
 @Repository
-public interface EventDao extends JpaRepository<Event, Long>{
+public interface EventDao extends JpaRepository<Event, Long> {
 
 }

@@ -11,12 +11,12 @@ public class Address {
 	String state;
 	String zip;
 
-	public Address(Integer _number, String _street) {
+	public Address(Integer _number, String _street, String _city, String _state, String _zip) {
 		this.number = _number;
 		this.street = _street;
-		this.city = "San Jose";
-		this.state = "California";
-		this.zip = "95110";
+		this.city = _city;
+		this.state = _state;
+		this.zip = _zip;
 	}
 
 	public Address() {

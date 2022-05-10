@@ -1,6 +1,5 @@
 package edu.sjsu.cmpe275.project.services;
 
-//import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import edu.sjsu.cmpe275.project.dao.UserDao;
 import edu.sjsu.cmpe275.project.models.Address;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
 
 @Service
@@ -47,12 +47,23 @@ public class UserService {
 		return response;
 	}
 
-	public User updateUser(Long id, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
+	/**
+	 * Update user details
+	 * 
+	 * @param id
+	 * @param fullName
+	 * @param screenName
+	 * @param gender
+	 * @param description
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 * @return
+	 */
+	public User updateUser(User user, Optional<String> fullName, Optional<String> screenName, Optional<String> gender,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
-		User user = findUserById(id);
-		if (user == null)
-			return null;
 		setValues(user, fullName, screenName, gender, description, street, city, state, zip);
 		User response = userDao.save(user);
 
@@ -79,6 +90,20 @@ public class UserService {
 	public User findUserById(Long id) {
 		Optional<User> user = userDao.findById(id);
 		return user.isPresent() ? user.get() : null;
+	}
+
+	/**
+	 * Activate User Account
+	 * 
+	 * @param id
+	 * @param active
+	 * @return
+	 */
+	public User activateAccount(User user, AccountStatus active) {
+//		User user = findUserById(id);
+		user.setStatus(AccountStatus.ACTIVE);
+		User response = userDao.save(user);
+		return response;
 	}
 
 	/**
@@ -121,6 +146,7 @@ public class UserService {
 		if (zip.isPresent())
 			address.setZip(zip.get());
 		user.setAddress(address);
+		user.setStatus(AccountStatus.ACTIVE);
 	}
 
 	/**
