@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
+import edu.sjsu.cmpe275.project.types.EventStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -58,6 +59,9 @@ public class Event {
 
 	@Column
 	private AdmissionPolicy admissionPolicy;
+
+	@Column
+	private EventStatus status;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "creatorId")
@@ -241,6 +245,20 @@ public class Event {
 	 */
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public EventStatus getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(EventStatus status) {
+		this.status = status;
 	}
 
 }

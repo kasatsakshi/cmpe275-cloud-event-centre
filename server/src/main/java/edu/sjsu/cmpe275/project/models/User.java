@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -49,6 +50,9 @@ public class User {
 
 	@Column
 	private String description;
+
+	@Column
+	private AccountStatus status;
 
 	@Embedded
 	private Address address;
@@ -207,6 +211,20 @@ public class User {
 	 */
 	public void setEventsRegistered(List<Event> eventsRegistered) {
 		this.eventsRegistered = eventsRegistered;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public AccountStatus getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(AccountStatus status) {
+		this.status = status;
 	}
 
 }

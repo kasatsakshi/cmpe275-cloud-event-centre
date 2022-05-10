@@ -9,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +22,7 @@ import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
+import edu.sjsu.cmpe275.project.types.EventStatus;
 
 @RestController
 @RequestMapping("/api/event")
@@ -43,10 +43,10 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getEvent(@PathVariable Long id) {
 		Event event = eventService.findEventById(id);
-		if (event != null) {
-			return new ResponseEntity<Event>(event, HttpStatus.OK);
+		if (event == null) {
+			return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Event>(event, HttpStatus.OK);
 	}
 
 	/**
@@ -56,12 +56,15 @@ public class EventController {
 	 * @return
 	 */
 	@GetMapping("/all")
-	public ResponseEntity<?> getAllEvents() {
-		List<Event> events = eventService.getAllEvents();
-		if (events != null) {
-			return new ResponseEntity<>(events, HttpStatus.OK);
+	public ResponseEntity<?> getAllEvents(@RequestParam Optional<String> city,
+			@RequestParam Optional<EventStatus> status,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Optional<LocalDateTime> startTime,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Optional<LocalDateTime> endTime) {
+		List<Event> events = eventService.getAllEvents(city, status, startTime, endTime);
+		if (events == null) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
 
 	/**
@@ -99,7 +102,8 @@ public class EventController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		Event event = eventService.createEvent(title, startTime, endTime, deadline, minimumParticipants,
-				maximumParticipants, fee, admissionPolicy, creatorId, description, street, city, state, zip);
+				maximumParticipants, fee, admissionPolicy, creatorId, description, street, city, state, zip,
+				EventStatus.REGISTRATION_OPEN);
 		if (event != null)
 			return new ResponseEntity<Event>(event, HttpStatus.CREATED);
 		else
@@ -140,7 +144,7 @@ public class EventController {
 		if (event == null)
 			return new ResponseEntity<>("No such event created.", HttpStatus.NOT_FOUND);
 		else {
-			event = eventService.updateEvent(id, title, startTime, endTime, deadline, minimumParticipants,
+			event = eventService.updateEvent(event, title, startTime, endTime, deadline, minimumParticipants,
 					maximumParticipants, fee, admissionPolicy, description, street, city, state, zip);
 			if (event != null)
 				return new ResponseEntity<Event>(event, HttpStatus.OK);
@@ -150,25 +154,28 @@ public class EventController {
 	}
 
 	/**
+	 * Endpoint to mark event as CANCELLED
+	 * 
 	 * @param id
 	 * @return
 	 */
-	@DeleteMapping("/{id}")
+	@PutMapping("/cancel/{id}")
 	public ResponseEntity<?> cancelEvent(@PathVariable Long id) {
 		Event event = eventService.findEventById(id);
 		if (event == null) {
-			return new ResponseEntity<>("No such event created", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("No such event exists", HttpStatus.NOT_FOUND);
 		} else {
-			List<User> participants = event.getParticipants();
-			if (participants.size() < event.getMinimumParticipants()) {
-				event = eventService.cancelEvent(id);
+			event = eventService.cancelEvent(event);
+			if (event == null)
+				return new ResponseEntity<>("Cannot cancel this event", HttpStatus.FORBIDDEN);
+			else
 				return new ResponseEntity<Event>(event, HttpStatus.OK);
-			}
 		}
-		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
+	 * Endpoint for event Sign up
+	 * 
 	 * @param userId
 	 * @param eventId
 	 * @return
@@ -181,14 +188,19 @@ public class EventController {
 		Event event = eventService.findEventById(eventId);
 		if (event == null)
 			return new ResponseEntity<>("Event does not exist", HttpStatus.NOT_FOUND);
+		if (event.getStatus() == EventStatus.CANCELLED)
+			return new ResponseEntity<>("Event has been cancelled", HttpStatus.FORBIDDEN);
+		if (event.getParticipants().size() >= event.getMaximumParticipants())
+			return new ResponseEntity<>("Maximum participants for the event has been reached", HttpStatus.FORBIDDEN);
+		LocalDateTime now = LocalDateTime.now();
+		if (now.isAfter(event.getDeadline()))
+			return new ResponseEntity<>("Registration has closed for this event", HttpStatus.FORBIDDEN);
 
-//		user = userService.registerEvent(userId, eventId);
-
-		event = eventService.addParticipant(userId, eventId);
+		event = eventService.addParticipant(user, event);
 
 		if (event == null)
-			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-		else
-			return new ResponseEntity<Event>(event, HttpStatus.OK);
+			return new ResponseEntity<>("User has already signed up for the event", HttpStatus.FORBIDDEN);
+
+		return new ResponseEntity<Event>(event, HttpStatus.OK);
 	}
 }

@@ -13,6 +13,7 @@ import edu.sjsu.cmpe275.project.models.Address;
 import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
+import edu.sjsu.cmpe275.project.types.EventStatus;
 
 @Service
 public class EventService {
@@ -36,12 +37,26 @@ public class EventService {
 		return event.isPresent() ? event.get() : null;
 	}
 
-	public List<Event> getAllEvents() {
-		List<Event> events = eventDao.findAll();
+	/**
+	 * Find all events based on filter
+	 * 
+	 * @param city
+	 * @param status
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<Event> getAllEvents(Optional<String> city, Optional<EventStatus> status,
+			Optional<LocalDateTime> startTime, Optional<LocalDateTime> endTime) {
+		List<Event> events = null;
+		events = eventDao.findAll();
+
 		return events;
 	}
 
 	/**
+	 * Create new event
+	 * 
 	 * @param title
 	 * @param startTime
 	 * @param endTime
@@ -61,20 +76,22 @@ public class EventService {
 	public Event createEvent(String title, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime deadline,
 			Integer minimumParticipants, Integer maximumParticipants, Integer fee, AdmissionPolicy admissionPolicy,
 			Long creatorId, Optional<String> description, Optional<String> street, Optional<String> city,
-			Optional<String> state, Optional<String> zip) {
+			Optional<String> state, Optional<String> zip, EventStatus status) {
 		Event event = new Event();
 		User creator = userService.findUserById(creatorId);
 		if (creator == null) {
 			return null;
 		}
 		setValues(event, title, startTime, endTime, deadline, minimumParticipants, maximumParticipants, fee,
-				admissionPolicy, creator, description, street, city, state, zip);
+				admissionPolicy, creator, description, street, city, state, zip, status);
 		Event response = eventDao.save(event);
 
 		return response;
 	}
 
 	/**
+	 * Update event info
+	 * 
 	 * @param id
 	 * @param title
 	 * @param startTime
@@ -91,58 +108,61 @@ public class EventService {
 	 * @param zip
 	 * @return
 	 */
-	public Event updateEvent(Long id, Optional<String> title, Optional<LocalDateTime> startTime,
+	public Event updateEvent(Event event, Optional<String> title, Optional<LocalDateTime> startTime,
 			Optional<LocalDateTime> endTime, Optional<LocalDateTime> deadline, Optional<Integer> minimumParticipants,
 			Optional<Integer> maximumParticipants, Optional<Integer> fee, Optional<AdmissionPolicy> admissionPolicy,
 			Optional<String> description, Optional<String> street, Optional<String> city, Optional<String> state,
 			Optional<String> zip) {
-		Event event = findEventById(id);
+//		Event event = findEventById(id);
 		if (event == null)
 			return null;
 		setValues(event, title, startTime, endTime, deadline, minimumParticipants, maximumParticipants, fee,
 				admissionPolicy, description, street, city, state, zip);
 		Event response = eventDao.save(event);
-
 		return response;
 	}
 
 	/**
+	 * Signup to event
+	 * 
 	 * @param userId
 	 * @param eventId
 	 * @return
 	 */
-	public Event addParticipant(Long userId, Long eventId) {
-		User user = userService.findUserById(userId);
-		Event event = findEventById(eventId);
-
+	public Event addParticipant(User participant, Event event) {
 		// Add event to User registered events
-		List<Event> registeredEvents = user.getEventsRegistered();
+		List<Event> registeredEvents = participant.getEventsRegistered();
 		if (registeredEvents.contains(event)) {
 			return null;
 		} else
 			registeredEvents.add(event);
-		user.setEventsRegistered(registeredEvents);
-		userDao.save(user);
+		participant.setEventsRegistered(registeredEvents);
+		userDao.save(participant);
 
 		// Add user to event participants
 		List<User> participants = event.getParticipants();
-		if (participants.contains(user)) {
+		if (participants.contains(participant)) {
 			return null;
 		} else
-			participants.add(user);
+			participants.add(participant);
 		event.setParticipants(participants);
-		eventDao.save(event);
-		return event;
+		Event response = eventDao.save(event);
+		return response;
 	}
 
 	/**
+	 * Cancel event
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public Event cancelEvent(Long id) {
-		Event event = findEventById(id);
-		eventDao.deleteById(id);
-		return event;
+	public Event cancelEvent(Event event) {
+		List<User> participants = event.getParticipants();
+		if (participants.size() > event.getMinimumParticipants())
+			return null;
+		event.setStatus(EventStatus.CANCELLED);
+		Event response = eventDao.save(event);
+		return response;
 	}
 
 	/**
@@ -167,7 +187,7 @@ public class EventService {
 	private void setValues(Event event, String title, LocalDateTime startTime, LocalDateTime endTime,
 			LocalDateTime deadline, Integer minimumParticipants, Integer maximumParticipants, Integer fee,
 			AdmissionPolicy admissionPolicy, User creator, Optional<String> description, Optional<String> street,
-			Optional<String> city, Optional<String> state, Optional<String> zip) {
+			Optional<String> city, Optional<String> state, Optional<String> zip, EventStatus status) {
 		event.setTitle(title);
 		event.setStartTime(startTime);
 		event.setEndTime(endTime);
@@ -189,6 +209,7 @@ public class EventService {
 		if (zip.isPresent())
 			address.setZip(zip.get());
 		event.setAddress(address);
+		event.setStatus(status);
 	}
 
 	/**
