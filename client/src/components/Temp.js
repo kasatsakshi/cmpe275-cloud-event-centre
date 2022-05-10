@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
 
-
-function EventDashboard() {
+function Temp() {
 
 
   const roomss = [
@@ -82,7 +81,6 @@ function EventDashboard() {
   {
     const dupdate = duplicatehotes.filter(room=>room.title.toLowerCase().includes(searchkey))
     sethotels(dupdate)
-
   }
   function filterByStartDate()
 {
@@ -224,4 +222,4 @@ function EventDashboard() {
   );
 }
 
-export default EventDashboard;
+export default Temp;
