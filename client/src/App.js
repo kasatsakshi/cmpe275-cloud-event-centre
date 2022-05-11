@@ -7,6 +7,7 @@ import Register from './components/Register';
 import Oauth from './components/Oauth';
 import CreateEvent from './components/CreateEvent';
 import EventDashboard from './components/EventDashboard';
+import EventPage from './components/EventPage';
 import Temp from './components/Temp';
 
 function App() {
@@ -35,6 +36,9 @@ function App() {
         </Routes>
         <Routes>
         <Route path="/temp" element={<Temp />}/>
+        </Routes>
+        <Routes>
+        <Route path="/eventpage" element={<EventPage />}/>
         </Routes>
       </div>
     </Router>

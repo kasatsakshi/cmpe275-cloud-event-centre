@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
 import './temp.css';
+import { Link } from 'react-router-dom';
 
 function EventDashboard() {
 
@@ -209,8 +210,11 @@ function EventDashboard() {
                   <h5 class="card-title">{room.title}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{room.startTime}</h6>
                   <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="card-link">{room.state}</a>
-                  <a href="#" class="card-link">{room.description}</a>
+                  <p href="#" class="card-link">{room.state}</p>
+                  <p href="#" class="card-link">{room.description}</p>
+                  <Link to="/eventpage">
+                        <button class="btn btn-primary" onClick={()=> localStorage.setItem('event_name',room.id)}>Order!</button>
+                  </Link>
                 </div>
               </div>
               </div>
