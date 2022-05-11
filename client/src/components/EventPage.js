@@ -4,6 +4,7 @@ import Register from "./Register";
 import axios from "axios";
 import './temp.css';
 import { Link } from 'react-router-dom';
+import EventNavbar from "./EventNavbar";
 
 function EventPage() {
 
@@ -25,7 +26,7 @@ function EventPage() {
   
   return (
     <body>
-        
+         <EventNavbar/>
     
     <div class="card text-center">
   <div class="card-header">

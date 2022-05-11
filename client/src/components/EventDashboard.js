@@ -4,33 +4,9 @@ import Register from "./Register";
 import axios from "axios";
 import './temp.css';
 import { Link } from 'react-router-dom';
+import EventNavbar from "./EventNavbar";
 
 function EventDashboard() {
-
-
-  const roomss = [
-    { 
-        name:'event1',
-        location:'san jose',
-        type:'active',
-        startDate: '2022-05-12',
-        endDate: '2022-05-14'
-    },
-    { 
-        name:'event2',
-        location:'remote',
-        type:'not active',
-        startDate: '2022-05-09',
-        endDate: '2022-05-10'
-    },
-    { 
-        name:'event3',
-        location:'remote',
-        type:'active',
-        startDate: '2022-05-03',
-        endDate: '2022-05-12'
-    }
-  ];
 
 
   const [hotels, sethotels] = useState([]);
@@ -119,7 +95,8 @@ function EventDashboard() {
 
   return (
     <body>
-    <div className="container" style={{height:"5000px"}}>
+      <EventNavbar/>
+    <div className="container">
       <div className="cont" style={{height:'100px'}}>
         <div className="row bs p-3 m-5">
           

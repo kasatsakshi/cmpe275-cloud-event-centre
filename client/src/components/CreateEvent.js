@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import DateTimePicker from 'react-datetime-picker';
+import EventNavbar from "./EventNavbar";
+import './temp.css';
 
 function CreateEvent() {
 
@@ -74,8 +76,10 @@ function CreateEvent() {
   };
 
   return (
-    <div class="container" id="container" style={{ marginTop: '600px' }}>
-      <div className='form-container register-container'>
+    <body>
+    <EventNavbar/>
+    <div class="container">
+      <div>
         <form onSubmit={e => onSubmit(e)}>
           <h1>Create Event</h1>
           <div className='register-radio'>
@@ -264,6 +268,7 @@ function CreateEvent() {
         </form>
       </div>
     </div>
+    </body>
   )
 }
 
