@@ -2,33 +2,11 @@ import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
+import './temp.css';
+import { Link } from 'react-router-dom';
+import EventNavbar from "./EventNavbar";
 
 function EventDashboard() {
-
-
-  const roomss = [
-    { 
-        name:'event1',
-        location:'san jose',
-        type:'active',
-        startDate: '2022-05-12',
-        endDate: '2022-05-14'
-    },
-    { 
-        name:'event2',
-        location:'remote',
-        type:'not active',
-        startDate: '2022-05-09',
-        endDate: '2022-05-10'
-    },
-    { 
-        name:'event3',
-        location:'remote',
-        type:'active',
-        startDate: '2022-05-03',
-        endDate: '2022-05-12'
-    }
-  ];
 
 
   const [hotels, sethotels] = useState([]);
@@ -81,6 +59,7 @@ function EventDashboard() {
   {
     const dupdate = duplicatehotes.filter(room=>room.title.toLowerCase().includes(searchkey))
     sethotels(dupdate)
+
   }
   function filterByStartDate()
 {
@@ -91,7 +70,7 @@ function EventDashboard() {
   {
     setLocation(e)
     if(e!=='all'){
-      const dupdate = duplicatehotes.filter(room=>room.location.toLowerCase().includes(e.toLowerCase()))
+      const dupdate = duplicatehotes.filter(room=>room.address.city.toLowerCase().includes(e.toLowerCase()))
       sethotels(dupdate)
     }
     else{
@@ -105,7 +84,7 @@ function EventDashboard() {
   {
     settype(e)
     if(e!=='all'){
-      const dupdate = duplicatehotes.filter(room=>room.type.toLowerCase().includes(e.toLowerCase()))
+      const dupdate = duplicatehotes.filter(room=>room.status.toLowerCase().includes(e.toLowerCase()))
       sethotels(dupdate)
     }
     else{
@@ -115,8 +94,9 @@ function EventDashboard() {
   }
 
   return (
-    <body style={{marginTop:'50px'}}>
-    <div className="mt-5">
+    <body>
+      <EventNavbar/>
+    <div className="container">
       <div className="cont" style={{height:'100px'}}>
         <div className="row bs p-3 m-5">
           
@@ -150,9 +130,9 @@ function EventDashboard() {
             <select className="form-control m-2" value={type} onChange={(e)=>{filterByType(e.target.value)}} >
 
             <option value="all">All</option>
-              <option value="delux">Delux</option>
-              <option value="non-delux">Non Delux</option>
-              
+              <option value="ACTIVE">Active</option>
+              <option value="FINISHED">Finished</option>
+              <option value="REGISTRATION_OPEN">Open</option>
             </select>
           </div>
 
@@ -207,8 +187,11 @@ function EventDashboard() {
                   <h5 class="card-title">{room.title}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{room.startTime}</h6>
                   <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="card-link">{room.state}</a>
-                  <a href="#" class="card-link">{room.description}</a>
+                  <p href="#" class="card-link">{room.state}</p>
+                  <p href="#" class="card-link">{room.description}</p>
+                  <Link to="/eventpage">
+                        <button class="btn btn-primary" onClick={()=> localStorage.setItem('event_name',room.id)}>Order!</button>
+                  </Link>
                 </div>
               </div>
               </div>

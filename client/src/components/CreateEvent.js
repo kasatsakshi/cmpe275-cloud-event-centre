@@ -8,12 +8,16 @@ import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import DateTimePicker from 'react-datetime-picker';
+import EventNavbar from "./EventNavbar";
+import './temp.css';
 
 function CreateEvent() {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [deadlinee, setDeadline] = useState("");
+  const [value,setValue]= useState(new Date());
 
   const [formData, setFormData] = useState({
     title: '',
@@ -29,16 +33,19 @@ function CreateEvent() {
     street: '',
     city: '',
     state: '',
-    zip: ''
+    zip: '',
+    stTime:'',
+    enTime:'',
+    dTime:''
   });
 
-  const { title, description, fee, admissionPolicy, startTime, endTime, deadline, maximumParticipants, minimumParticipants, creatorId, street, city, state, zip } = formData;
+  const { title, description, fee, admissionPolicy, startTime, endTime, deadline, maximumParticipants, minimumParticipants, creatorId, street, city, state, zip,stTime,enTime,dTime } = formData;
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async e => {
     e.preventDefault();
-
+    console.log(stTime);
     console.log(formData);
     //register({email,password,location});
     axios.post(`/api/event`, null, { params: {
@@ -46,9 +53,9 @@ function CreateEvent() {
       description,
       fee,
       admissionPolicy,
-      startTime:startTime+'T'+'08:30',
-      endTime:endTime+'T'+'08:30',
-      deadline: deadline+'T'+'08:30',
+      startTime:startTime+'T'+stTime,
+      endTime:endTime+'T'+enTime,
+      deadline: deadline+'T'+dTime,
       minimumParticipants,
       maximumParticipants,
       creatorId,
@@ -59,7 +66,7 @@ function CreateEvent() {
     }})
     .then(response => response.status)
     .catch(err => console.warn(err));
-
+    alert("Event is created!");
   }
 
   const assignFromDate = e => {
@@ -69,8 +76,10 @@ function CreateEvent() {
   };
 
   return (
-    <div class="container" id="container" style={{ marginTop: '500px' }}>
-      <div className='form-container register-container'>
+    <body>
+    <EventNavbar/>
+    <div class="container">
+      <div>
         <form onSubmit={e => onSubmit(e)}>
           <h1>Create Event</h1>
           <div className='register-radio'>
@@ -105,9 +114,10 @@ function CreateEvent() {
             value={description}
             onChange={e => onChange(e)}
           />
-          <div className="col-sm-4">
-            <div className="form-group">
-              <span style={{ opacity: "0.6", fontSize: "13px" }}>from</span>
+
+
+          
+              <span style={{ opacity: "0.6", fontSize: "13px", marginTop:"15px"  }}><b>from</b></span>
               <input
                 type="date"
                 name="startTime"
@@ -118,11 +128,16 @@ function CreateEvent() {
                 className="form-control datepicker"
                 
               />
-            </div>
-          </div>
-          <div className="col-sm-4">
-            <div className="form-group">
-              <span style={{ opacity: "0.6", fontSize: "13px" }}>to</span>
+           
+          <input 
+            type="time" 
+            name="stTime" 
+            value={stTime}
+            onChange={e=>onChange(e)}
+            />
+
+          
+              <span style={{ opacity: "0.6", fontSize: "13px", marginTop:"15px"  }}><b>to</b></span>
               <input
                 type="date"
                 name="endTime"
@@ -133,12 +148,18 @@ function CreateEvent() {
                 onChange={e => onChange(e)}
                 className="form-control datepicker"
               />
-            </div>
-          </div>
+            
 
-          <div className="col-sm-4">
-            <div className="form-group">
-              <span style={{ opacity: "0.6", fontSize: "13px" }}>to</span>
+
+          <input 
+            type="time" 
+            name="enTime" 
+            value={enTime}
+            onChange={e=>onChange(e)}
+            />
+
+          
+              <span style={{ opacity: "0.6", fontSize: "13px", marginTop:"15px" }}><b>Deadline</b></span>
               <input
                 type="date"
                 name="deadline"
@@ -149,10 +170,15 @@ function CreateEvent() {
                 placeholder="Select Date"
                 onChange={e => onChange(e)}
                 className="form-control datepicker"
-                style={{ width: "150px" }}
               />
-            </div>
-          </div>
+           
+
+          <input 
+            type="time" 
+            name="dTime" 
+            value={dTime}
+            onChange={e=>onChange(e)}
+            />
 
           <TextField
             required
@@ -242,6 +268,7 @@ function CreateEvent() {
         </form>
       </div>
     </div>
+    </body>
   )
 }
 
