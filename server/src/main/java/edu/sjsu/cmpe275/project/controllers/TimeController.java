@@ -19,8 +19,7 @@ public class TimeController {
 
 	@PostMapping
 	public ResponseEntity<?> setTime(@RequestParam String dateTime) {
-		timeService.setTime(dateTime);
-		return ResponseEntity.ok(timeService.getTime());
+		return ResponseEntity.ok(timeService.setTime(dateTime));
 	}
 
 	@GetMapping
