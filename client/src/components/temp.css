@@ -1,3 +1,41 @@
 .cont1{
     width: 100%;
 }
+
+/* .container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    height: 100vh;
+  } */
+/* 
+  .body{
+      width: 100%;
+  } */
+
+  .yash{
+    width: 18rem;
+    
+}
+.card-img-top{
+    height: 12rem;
+}
+
+
+.stunt {
+    display: inline-block;
+    /* You can also add some margins here to make it look prettier */
+    zoom:1;
+    *display:inline;
+    margin-right: 40px;
+    /* this fix is needed for IE7- */
+}
+
+  .filter{
+      display: inline;
+  }
+
+  .container{
+
+        overflow: auto;
+  }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
-
+import './temp.css';
 
 function EventDashboard() {
 
@@ -117,8 +117,8 @@ function EventDashboard() {
   }
 
   return (
-    <body style={{marginTop:'500px'}}>
-    <div className="mt-5">
+    <body>
+    <div className="container" style={{height:"5000px"}}>
       <div className="cont" style={{height:'100px'}}>
         <div className="row bs p-3 m-5">
           

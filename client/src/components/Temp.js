@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
-
+import './temp.css';
 function Temp() {
 
 
@@ -115,13 +115,10 @@ function Temp() {
   }
 
   return (
-    <body style={{marginTop:'500px'}}>
-    <div className="mt-5">
-      <div className="cont" style={{height:'100px'}}>
-        <div className="row bs p-3 m-5">
-          
-
-          <div className="col-md-2">
+      
+    <div>
+      
+      <div className="col-md-2">
             <input
               type="text"
               className="form-control i2 m-2"
@@ -131,94 +128,50 @@ function Temp() {
               onChange={(e)=>{setsearchkey(e.target.value)}}
             />
           </div>
+   
+    <div >
 
+    <div required>
+      <input type="radio" value="pickup" name="gender" checked/> Pick Up
+      <input type="radio" value="delivery" name="gender" /> Delivery
 
-          <div className="col-md-2">
-            
-<select className="form-control m-2" value={location} onChange={(e)=>{filterByLocation(e.target.value)}} >
-
-<option value="all">All</option>
-  <option value="Montery">Montery</option>
-  <option value="san Jose">San Jose</option>
-  <option value="san Francisco">San Francisco</option>
-  
-</select>
-          </div>
-
-
-          <div className="col-md-2">
-            <select className="form-control m-2" value={type} onChange={(e)=>{filterByType(e.target.value)}} >
-
-            <option value="all">All</option>
-              <option value="ACTIVE">Active</option>
-              <option value="FINISHED">Finished</option>
-              <option value="REGISTRATION_OPEN">Open</option>
-            </select>
-          </div>
-
-          <div className="col-md-2">
-        <div className="form-group">
-          <span style={{ opacity: "0.6", fontSize: "13px" }}>from</span>
-          <input
-            type="date"
-            name="from"
-            id="startdate"
-            min={new Date().toLocaleDateString('en-ca')}
-            value={fromDate}
-            onChange={(e)=>{assignFromDate(e.target.value)}}
-            className="form-control datepicker"
-            style={{ width: "150px" }}
-          />
-        </div>
-      </div>
-
-      <div className="col-sm-2">
-        <div className="form-group">
-          <span style={{ opacity: "0.6", fontSize: "13px" }}>to</span>
-          <input
-            type="date"
-            name="to"
-            min={fromDate}
-            id="enddate"
-            value={toDate}
-            placeholder="Select Date"
-            onChange={e => ToDate(e.target.value)}
-            className="form-control datepicker"
-            style={{ width: "150px" }}
-          />
-        </div>
-      </div>
-
-
-        </div>
-      </div>
-
-    
-
-      <div className="row justify-content-center">
-        {loading ? (
-          <Register />
-        ) : (
-          hotels.map((room) => {
-            return (
-                <div class="row">
-                <div class="card" style={{width:'1002px'}}>
-                <div class="card-body">
-                  <h5 class="card-title">{room.title}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">{room.startTime}</h6>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="card-link">{room.state}</a>
-                  <a href="#" class="card-link">{room.description}</a>
-                </div>
-              </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-      
     </div>
-    </body>
+
+     <select >
+                
+                <option value="sanjose">San Jose</option>
+                <option value="sanfrancisco">San Francisco</option>
+                <option value="santaclara">Santa Clara</option>
+      </select>
+    
+    </div>
+    <ul>
+      {hotels.map(country => (
+        <li class="stunt">
+             <div class="row">
+            <div class="col-lg-4">
+          <div class="card yash">
+<img class="card-img-top" src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cmVzdGF1cmFudHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80" alt="Card image cap"/>
+<div class="card-body">
+  <h5 class="card-title">{country.title}</h5>
+  <p>{country.startTime}</p>
+  <p>{country.status}</p>
+  
+  <button class="btn btn-primary">Click</button>
+
+
+  
+</div>
+</div>
+</div>
+</div>
+            
+            
+            
+            </li>
+      ))}
+    </ul>
+    </div>
   );
 }
 
