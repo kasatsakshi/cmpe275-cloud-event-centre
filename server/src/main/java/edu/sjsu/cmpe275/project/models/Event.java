@@ -2,6 +2,10 @@ package edu.sjsu.cmpe275.project.models;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -18,12 +22,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "EVENTS")
 @JsonPropertyOrder({ "id", "title", "description", "fee", "admissionPolicy", "startTime", "endTime", "deadline",
-		"creatorId", "minimumParticipants", "maximumParticipants", "address" })
+		"creatorId", "minimumParticipants", "maximumParticipants", "address", "creator", "participants", "status" })
 public class Event {
 
 	@Id
@@ -65,12 +70,18 @@ public class Event {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "creatorId")
-	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password" })
+	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password", "status", "description",
+			"authProvider", "gender" })
 	private User creator;
 
 	@ManyToMany(mappedBy = "eventsRegistered", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password" })
+	@JsonIgnoreProperties({ "address", "eventsCreated", "eventsRegistered", "password", "status", "accountType",
+			"description", "authProvider", "gender" })
 	private List<User> participants;
+
+	@OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Set<EventRequest> signupRequests;
 
 	/**
 	 * @return the id
