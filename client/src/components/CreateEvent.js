@@ -84,14 +84,14 @@ function CreateEvent() {
           <h1>Create Event</h1>
           <div className='register-radio'>
             {/* <FormLabel className='register-label' id="account-type">Account Type</FormLabel> */}
-            <RadioGroup
+            {/* <RadioGroup
               row
               aria-labelledby="account-type"
               name="account-type-buttons"
             >
               <FormControlLabel value="person" control={<Radio />} label="Person" />
               <FormControlLabel value="organization" control={<Radio />} label="Organization" />
-            </RadioGroup>
+            </RadioGroup> */}
           </div>
 
 

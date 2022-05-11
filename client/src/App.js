@@ -12,36 +12,19 @@ import Temp from './components/Temp';
 
 function App() {
   return (
+    <div className="App">
     <Router>
-      <div className="App">
-        <header className="App-header">
-        </header>
-        {/* <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes> */}
         <Routes>
           <Route path="/" element={<Signup />} />
-        </Routes>
-        <Routes>
           <Route path="/register" element={<Register />} />
-        </Routes>
-        <Routes>
           <Route path="/oauth" element={<Oauth />} />
-        </Routes>
-        <Routes>
           <Route path="/createevent" element={<CreateEvent />} />
+          <Route path="/eventdash" element={<EventDashboard />}/>
+          <Route path="/temp" element={<Temp />}/>
+          <Route path="/eventpage" element={<EventPage />}/>
         </Routes>
-        <Routes>
-        <Route path="/eventdash" element={<EventDashboard />}/>
-        </Routes>
-        <Routes>
-        <Route path="/temp" element={<Temp />}/>
-        </Routes>
-        <Routes>
-        <Route path="/eventpage" element={<EventPage />}/>
-        </Routes>
-      </div>
     </Router>
+    </div>
   );
 }
 
