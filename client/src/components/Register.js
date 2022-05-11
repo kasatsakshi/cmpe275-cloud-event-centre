@@ -1,12 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import axios from 'axios';
 import './Register.css';
 
 function Register() {
+
+  const [fullName, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [screenName, setScreenName] = useState('');
+  const [gender, setGender] = useState('');
+  const [accountType, setAccountType] = useState('');
+  const [description, setDescription] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    axios.post(`/api/user`, null, {
+      params: {
+        fullName,
+        email,
+        password,
+        screenName,
+        gender,
+        accountType,
+        description,
+        street,
+        city,
+        state,
+        zip
+      }
+    })
+      .then(response => response.status)
+      .catch(err => console.warn(err));
+    alert("user registered");
+  };
+
   return (
 
     <div className='register-container'>
@@ -19,8 +55,8 @@ function Register() {
             aria-labelledby="account-type"
             name="account-type-buttons"
           >
-            <FormControlLabel value="person" control={<Radio />} label="Person" />
-            <FormControlLabel value="organization" control={<Radio />} label="Organization" />
+            <FormControlLabel onClick={(e) => setAccountType('PERSON')} value="person" control={<Radio />} label="Person" />
+            <FormControlLabel onClick={(e) => setAccountType('ORGANISATION')} value="organization" control={<Radio />} label="Organization" />
           </RadioGroup>
         </div>
         <TextField
@@ -29,6 +65,7 @@ function Register() {
           placeholder='Enter your full name'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setName(e.target.value)}
         />
         <TextField
           required
@@ -36,6 +73,7 @@ function Register() {
           placeholder='email'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           required
@@ -43,6 +81,7 @@ function Register() {
           placeholder='password'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <div className='register-radio'>
           <FormLabel>Gender</FormLabel>
@@ -51,53 +90,59 @@ function Register() {
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
           >
-            <FormControlLabel value="female" control={<Radio />} label="Female" />
-            <FormControlLabel value="male" control={<Radio />} label="Male" />
-            <FormControlLabel value="other" control={<Radio />} label="Other" />
+            <FormControlLabel onClick={(e) => setGender('female')} value="female" control={<Radio />} label="Female" />
+            <FormControlLabel onClick={(e) => setGender('male')} value="male" control={<Radio />} label="Male" />
+            <FormControlLabel onClick={(e) => setGender('other')} value="other" control={<Radio />} label="Other" />
           </RadioGroup>
         </div>
         <TextField
           required
-          id="name"
+          id="ScreenName"
           placeholder='Screen Name'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setScreenName(e.target.value)}
         />
         <TextField
           required
-          id="name"
+          id="description"
           placeholder='Description'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <TextField
           required
-          id="name"
-          placeholder='Street (optional)'
+          id="street"
+          placeholder='Street'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setStreet(e.target.value)}
         />
         <TextField
           required
-          id="name"
+          id="city"
           placeholder='City'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setCity(e.target.value)}
         />
         <TextField
           required
-          id="name"
+          id="state"
           placeholder='State'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
+          onChange={(e) => setState(e.target.value)}
         />
         <TextField
           required
-          id="name"
+          id="zip"
           placeholder='Zip'
           className='register-input-fields'
+          onChange={(e) => setZip(e.target.value)}
         />
-        <button className='register-button'>Register</button>
+        <button onClick={handleClick} className='register-button'>Register</button>
       </form>
     </div>
   )
