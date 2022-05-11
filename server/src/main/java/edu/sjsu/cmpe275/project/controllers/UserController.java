@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe275.project.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
@@ -37,9 +37,6 @@ public class UserController {
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
-
-	@Autowired
-	ObjectMapper objectMapper;
 
 	/**
 	 * Endpoint for fetching user information by id
@@ -191,5 +188,39 @@ public class UserController {
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	/**
+	 * Get user's event signup requests
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/signuprequests/{id}")
+	public ResponseEntity<?> sentRequests(@PathVariable Long id) {
+		User user = userService.findUserById(id);
+		if (user == null)
+			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+		List<EventRequest> myRequests = userService.myRequests(user);
+		if (myRequests == null)
+			return new ResponseEntity<>("You have not requested signup for any event", HttpStatus.OK);
+		return new ResponseEntity<List<EventRequest>>(myRequests, HttpStatus.OK);
+	}
+
+	/**
+	 * Get user's recieved requests for created events
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/recievedrequests/{id}")
+	public ResponseEntity<?> recievedRequests(@PathVariable Long id) {
+		User user = userService.findUserById(id);
+		if (user == null)
+			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+		List<EventRequest> requestsRecieved = userService.requestsRecieved(user);
+		if (requestsRecieved == null)
+			return new ResponseEntity<>("You have not recieved any requests for your events", HttpStatus.OK);
+		return new ResponseEntity<List<EventRequest>>(requestsRecieved, HttpStatus.OK);
 	}
 }

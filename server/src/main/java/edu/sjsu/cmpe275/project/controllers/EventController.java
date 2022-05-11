@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.project.models.Event;
+import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.services.EventService;
+import edu.sjsu.cmpe275.project.services.RequestService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
 import edu.sjsu.cmpe275.project.types.EventStatus;
@@ -33,6 +35,9 @@ public class EventController {
 
 	@Autowired
 	EventService eventService;
+
+	@Autowired
+	RequestService requestService;
 
 	/**
 	 * Endpoint for fetching event information by id
@@ -185,22 +190,38 @@ public class EventController {
 		User user = userService.findUserById(userId);
 		if (user == null)
 			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+
 		Event event = eventService.findEventById(eventId);
+
 		if (event == null)
 			return new ResponseEntity<>("Event does not exist", HttpStatus.NOT_FOUND);
+
 		if (event.getStatus() == EventStatus.CANCELLED)
 			return new ResponseEntity<>("Event has been cancelled", HttpStatus.FORBIDDEN);
+
+		if (event.getParticipants().contains(user))
+			return new ResponseEntity<>("You have already registered to this event.", HttpStatus.FORBIDDEN);
+
 		if (event.getParticipants().size() >= event.getMaximumParticipants())
 			return new ResponseEntity<>("Maximum participants for the event has been reached", HttpStatus.FORBIDDEN);
+
 		LocalDateTime now = LocalDateTime.now();
 		if (now.isAfter(event.getDeadline()))
 			return new ResponseEntity<>("Registration has closed for this event", HttpStatus.FORBIDDEN);
 
-		event = eventService.addParticipant(user, event);
+		if (event.getAdmissionPolicy() == AdmissionPolicy.FCFS) {
+			event = eventService.addParticipant(user, event);
 
-		if (event == null)
-			return new ResponseEntity<>("User has already signed up for the event", HttpStatus.FORBIDDEN);
+			if (event == null)
+				return new ResponseEntity<>("User has already signed up for the event", HttpStatus.FORBIDDEN);
 
-		return new ResponseEntity<Event>(event, HttpStatus.OK);
+			return new ResponseEntity<Event>(event, HttpStatus.OK);
+		} else {
+			EventRequest signUpRequest = requestService.sendRequest(user, event);
+			if (signUpRequest == null) {
+				return new ResponseEntity<>("You have already registered to this event.", HttpStatus.FORBIDDEN);
+			}
+			return new ResponseEntity<EventRequest>(signUpRequest, HttpStatus.OK);
+		}
 	}
 }

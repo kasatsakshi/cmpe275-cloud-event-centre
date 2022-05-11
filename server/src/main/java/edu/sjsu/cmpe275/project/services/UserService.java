@@ -1,21 +1,28 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import edu.sjsu.cmpe275.project.dao.EventRequestDao;
 import edu.sjsu.cmpe275.project.dao.UserDao;
 import edu.sjsu.cmpe275.project.models.Address;
+import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
+import edu.sjsu.cmpe275.project.types.AuthProvider;
 
 @Service
 public class UserService {
 	@Autowired
 	UserDao userDao;
+
+	@Autowired
+	EventRequestDao eventRequestDao;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -100,10 +107,31 @@ public class UserService {
 	 * @return
 	 */
 	public User activateAccount(User user, AccountStatus active) {
-//		User user = findUserById(id);
 		user.setStatus(AccountStatus.ACTIVE);
 		User response = userDao.save(user);
 		return response;
+	}
+
+	/**
+	 * Get user's sent requests
+	 * 
+	 * @param participant
+	 * @return
+	 */
+	public List<EventRequest> myRequests(User participant) {
+		Optional<List<EventRequest>> myRequests = eventRequestDao.findByUser(participant);
+		return myRequests.isPresent() ? myRequests.get() : null;
+	}
+
+	/**
+	 * Get creator's recieved requests
+	 * 
+	 * @param participant
+	 * @return
+	 */
+	public List<EventRequest> requestsRecieved(User participant) {
+		Optional<List<EventRequest>> requestsRecieved = eventRequestDao.findByCreator(participant);
+		return requestsRecieved.isPresent() ? requestsRecieved.get() : null;
 	}
 
 	/**
@@ -147,6 +175,7 @@ public class UserService {
 			address.setZip(zip.get());
 		user.setAddress(address);
 		user.setStatus(AccountStatus.ACTIVE);
+		user.setAuthProvider(AuthProvider.local);
 	}
 
 	/**

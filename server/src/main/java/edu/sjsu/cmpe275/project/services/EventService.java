@@ -123,14 +123,13 @@ public class EventService {
 	}
 
 	/**
-	 * Signup to event
+	 * Add Participant to FCFS event
 	 * 
 	 * @param userId
 	 * @param eventId
 	 * @return
 	 */
 	public Event addParticipant(User participant, Event event) {
-		// Add event to User registered events
 		List<Event> registeredEvents = participant.getEventsRegistered();
 		if (registeredEvents.contains(event)) {
 			return null;
@@ -148,6 +147,12 @@ public class EventService {
 		event.setParticipants(participants);
 		Event response = eventDao.save(event);
 		return response;
+	}
+	
+	public List<Event> cancelEventTrigger(LocalDateTime endTime) {
+		List<Event> cancellableEvents = eventDao.findByEndTimeBefore(endTime);
+		cancellableEvents.forEach((event) -> cancelEvent(event));
+		return cancellableEvents;
 	}
 
 	/**
