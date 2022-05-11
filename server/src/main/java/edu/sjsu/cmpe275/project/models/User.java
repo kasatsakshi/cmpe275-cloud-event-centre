@@ -1,15 +1,23 @@
 package edu.sjsu.cmpe275.project.models;
 
 import java.util.List;
+import java.util.Set;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
+import edu.sjsu.cmpe275.project.types.AuthProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +30,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "USERS")
-@JsonPropertyOrder({ "id", "fullName", "screenName", "description", "accountType", "gender", "email", "password",
-		"team", "opponents" })
+@JsonPropertyOrder({ "id", "fullName", "screenName", "description", "email", "accountType", "gender", "address",
+		"eventsCreated", "eventsRegistered" })
 public class User {
 
 	@Id
@@ -33,6 +41,7 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String email;
 
+	@JsonIgnore
 	@Column(nullable = false, unique = false)
 	private String password;
 
@@ -51,20 +60,36 @@ public class User {
 	@Column
 	private String description;
 
+	@Column(length = 64)
+	private String verificationCode;
+
 	@Column
 	private AccountStatus status;
+
+	@Column
+	@Enumerated(EnumType.STRING)
+	private AuthProvider authProvider;
 
 	@Embedded
 	private Address address;
 
-	@OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({ "creator", "address", "participants" })
 	private List<Event> eventsCreated;
-//(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
 	@ManyToMany
 	@JoinTable(name = "event_participation", joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
-	@JsonIgnoreProperties({ "creator", "address", "participants" })
+	@JsonIgnoreProperties({ "creator", "participants", "minimumParticipants", "maximumParticipants",
+			"admissionPolicy" })
 	private List<Event> eventsRegistered;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Set<EventRequest> signupRequests;
+
+	@OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Set<EventRequest> requestsRecieved;
 
 	/**
 	 * @return the id
@@ -225,6 +250,20 @@ public class User {
 	 */
 	public void setStatus(AccountStatus status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the authProvider
+	 */
+	public AuthProvider getAuthProvider() {
+		return authProvider;
+	}
+
+	/**
+	 * @param authProvider the authProvider to set
+	 */
+	public void setAuthProvider(AuthProvider authProvider) {
+		this.authProvider = authProvider;
 	}
 
 }

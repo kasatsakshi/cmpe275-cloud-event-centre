@@ -12,3 +12,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+      
+#  security:
+#      oauth2:
+#        client:
+#          registration:
+#            google:
+#              clientId: 162062109197-p1uigbcd3tk65fvopdb9ojjud2r75uiu.apps.googleusercontent.com
+#              clientSecret: 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
+#              redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+#              scope:
+#                - email
+#                - profile
