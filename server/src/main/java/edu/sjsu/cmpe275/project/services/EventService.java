@@ -149,6 +149,12 @@ public class EventService {
 		Event response = eventDao.save(event);
 		return response;
 	}
+	
+	public List<Event> cancelEventTrigger(LocalDateTime endTime) {
+		List<Event> cancellableEvents = eventDao.findByEndTimeBefore(endTime);
+		cancellableEvents.forEach((event) -> cancelEvent(event));
+		return cancellableEvents;
+	}
 
 	/**
 	 * Cancel event
