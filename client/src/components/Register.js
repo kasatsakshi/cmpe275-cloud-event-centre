@@ -4,8 +4,15 @@ import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import styled from "styled-components";
 import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
 import './Register.css';
+import { signup } from '../redux/user';
+
+const Error = styled.span`
+  color: red;
+`;
 
 function Register() {
 
@@ -21,27 +28,46 @@ function Register() {
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
 
+  const dispatch = useDispatch();
+  const { isFetching, error } = useSelector((state) => state.user);
+
   const handleClick = (e) => {
     e.preventDefault();
-    axios.post(`/api/user`, null, {
-      params: {
-        fullName,
-        email,
-        password,
-        screenName,
-        gender,
-        accountType,
-        description,
-        street,
-        city,
-        state,
-        zip
-      }
+    signup(dispatch, {
+      fullName,
+      email,
+      password,
+      screenName,
+      gender,
+      accountType,
+      description,
+      street,
+      city,
+      state,
+      zip
     })
-      .then(response => response.status)
-      .catch(err => console.warn(err));
-    alert("user registered");
-  };
+  }
+
+  // const handleClick = (e) => {
+  //   e.preventDefault();
+  // axios.post(`/api/user`, null, {
+  //   params: {
+  //     fullName,
+  //     email,
+  //     password,
+  //     screenName,
+  //     gender,
+  //     accountType,
+  //     description,
+  //     street,
+  //     city,
+  //     state,
+  //     zip
+  //   }
+  // })
+  //     .then(response => response.status)
+  //     .catch(err => console.warn(err));
+  // };
 
   return (
 
@@ -143,6 +169,7 @@ function Register() {
           onChange={(e) => setZip(e.target.value)}
         />
         <button onClick={handleClick} className='register-button'>Register</button>
+        {error && <Error>Something went wrong! Try again</Error>}
       </form>
     </div>
   )

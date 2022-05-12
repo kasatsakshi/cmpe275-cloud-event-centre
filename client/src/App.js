@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Signup from './components/Signup';
 import Register from './components/Register';
@@ -12,14 +12,16 @@ import Temp from './components/Temp';
 import { useSelector } from "react-redux";
 
 function App() {
+  const user = useSelector((state) => state.user.currentUser);
+  console.log("In app the user: " + JSON.stringify(user));
   return (
     <Router>
       <div className="App">
         <header className="App-header">
         </header>
         <Routes>
-          <Route path="/" element={<Signup />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={user ? <Navigate to="eventdash" /> : <Signup />} />
+          <Route path="/register" element={user ? <EventDashboard /> : <Register />} />
           <Route path="/createevent" element={<CreateEvent />} />
           <Route path="/eventdash" element={<EventDashboard />} />
           <Route path="/eventpage" element={<EventPage />} />
