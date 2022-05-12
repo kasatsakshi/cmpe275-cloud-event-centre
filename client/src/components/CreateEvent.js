@@ -141,7 +141,7 @@ function CreateEvent() {
               <input
                 type="date"
                 name="endTime"
-                min={fromDate}
+                min={startTime}
                 id="endTime"
                 value={endTime}
                 placeholder="Select Date"
@@ -164,7 +164,7 @@ function CreateEvent() {
                 type="date"
                 name="deadline"
                 min={new Date().toLocaleDateString('en-ca')}
-                max={fromDate}
+                max={endTime}
                 id="deadline"
                 value={deadline}
                 placeholder="Select Date"
