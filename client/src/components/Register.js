@@ -105,6 +105,7 @@ function Register() {
           required
           id="password"
           placeholder='password'
+          type='password'
           className='register-input-fields'
           style={{ paddingBottom: 20 }}
           onChange={(e) => setPassword(e.target.value)}
