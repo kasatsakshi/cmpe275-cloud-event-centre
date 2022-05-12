@@ -9,6 +9,7 @@ import CreateEvent from './components/CreateEvent';
 import EventDashboard from './components/EventDashboard';
 import EventPage from './components/EventPage';
 import Temp from './components/Temp';
+import { useSelector } from "react-redux";
 
 
 function App() {
