@@ -53,7 +53,8 @@ public class UserController {
 	public ResponseEntity<?> getUserDetails(@RequestParam Long id) {
 		User user = userService.findUserById(id);
 		if (user == null) {
-			return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		}
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
@@ -68,7 +69,8 @@ public class UserController {
 	public ResponseEntity<?> getUserDetails(@RequestParam String email) {
 		User user = userService.findUserByEmail(email);
 		if (user == null) {
-			return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		}
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
@@ -101,14 +103,16 @@ public class UserController {
 
 		User user = userService.findUserByEmail(email);
 		if (user != null)
-			return new ResponseEntity<>("Email is already in use.", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"Email is already in use.\"");
 		else {
 			String siteURL = request.getRequestURL().toString();
 			siteURL = siteURL.replace(request.getServletPath(), "");
 			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, description,
 					street, city, state, zip, siteURL);
 			if (user == null)
-				return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
+						.body("\"message\":\"Something went wrong\"");
 			return new ResponseEntity<User>(user, HttpStatus.CREATED);
 		}
 
@@ -134,11 +138,13 @@ public class UserController {
 	@PostMapping(params = { "email", "password" })
 	public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password) {
 		if (email == null || email == "" || password == null || password == "")
-			return new ResponseEntity<>("Email or Password can not be empty", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"Email or Password can not be empty\"");
 
 		User user = userService.findUserByEmail(email);
 		if (user == null)
-			return new ResponseEntity<>("No such user exists", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		else {
 			if (user.getStatus() == AccountStatus.ACTIVE) {
 				if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
@@ -150,12 +156,12 @@ public class UserController {
 					response.put("status", user.getStatus());
 					response.put("eventsRegistered", user.getEventsRegistered());
 					return new ResponseEntity<>(response, HttpStatus.OK);
-//					return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
-//							.body("\"message\":\"Logged in successfully\"");
 				} else
-					return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);
+					return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
+							.body("\"message\":\"Password is incorrect.\"");
 			} else
-				return new ResponseEntity<>("Please verify your email", HttpStatus.UNAUTHORIZED);
+				return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
+						.body("\"message\":\"Please verify your email.\"");
 		}
 
 	}
@@ -182,13 +188,15 @@ public class UserController {
 			@RequestParam Optional<String> zip) {
 		User user = userService.findUserById(id);
 		if (user == null)
-			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		else
 			user = userService.updateUser(user, fullName, screenName, gender, description, street, city, state, zip);
 		if (user != null)
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		else
-			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"Something went wrong\"");
 	}
 
 	/**
@@ -201,15 +209,18 @@ public class UserController {
 	public ResponseEntity<?> activateAccount(@PathVariable Long id) {
 		User user = userService.findUserById(id);
 		if (user == null)
-			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		else if (user.getStatus() == AccountStatus.ACTIVE)
-			return new ResponseEntity<>("User is already active", HttpStatus.FORBIDDEN);
+			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User is already active\"");
 		else {
 			user = userService.activateAccount(user, AccountStatus.ACTIVE);
 			if (user != null)
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
+				.body("\"message\":\"Something went wrong\"");
 	}
 
 	/**
@@ -222,10 +233,12 @@ public class UserController {
 	public ResponseEntity<?> sentRequests(@PathVariable Long id) {
 		User user = userService.findUserById(id);
 		if (user == null)
-			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		List<EventRequest> myRequests = userService.myRequests(user);
 		if (myRequests == null)
-			return new ResponseEntity<>("You have not requested signup for any event", HttpStatus.OK);
+			return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"You have not requested signup for any event.\"");
 		return new ResponseEntity<List<EventRequest>>(myRequests, HttpStatus.OK);
 	}
 
@@ -239,10 +252,12 @@ public class UserController {
 	public ResponseEntity<?> recievedRequests(@PathVariable Long id) {
 		User user = userService.findUserById(id);
 		if (user == null)
-			return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"User not found\"");
 		List<EventRequest> requestsRecieved = userService.requestsRecieved(user);
 		if (requestsRecieved == null)
-			return new ResponseEntity<>("You have not recieved any requests for your events", HttpStatus.OK);
+			return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
+					.body("\"message\":\"You have not recieved signup request for any event.\"");
 		return new ResponseEntity<List<EventRequest>>(requestsRecieved, HttpStatus.OK);
 	}
 }

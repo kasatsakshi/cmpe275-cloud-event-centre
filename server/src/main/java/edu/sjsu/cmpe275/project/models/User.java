@@ -61,6 +61,7 @@ public class User {
 	private String description;
 
 	@Column(length = 64)
+	@JsonIgnore
 	private String verificationCode;
 
 	@Column
