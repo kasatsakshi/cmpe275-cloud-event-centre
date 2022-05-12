@@ -5,16 +5,17 @@ import axios from "axios";
 import './temp.css';
 import { Link } from 'react-router-dom';
 import EventNavbar from "./EventNavbar";
+import {useSelector} from "react-redux";
 
 function EventPage() {
-
+   const user = useSelector((state)=>state.user.currentUser);
 
   const [hotels, sethotels] = useState([]);
 
   const signupevents = ()  =>{
     //e.preventDefault();
     axios.post(`/api/event/register`, null, { params: {
-        userId:2,
+        userId:user.id,
         eventId:localStorage.getItem("event_name"),
       }})
       .then(response => response.status)
