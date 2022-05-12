@@ -1,9 +1,12 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,9 @@ import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
 import edu.sjsu.cmpe275.project.types.AuthProvider;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class UserService {
@@ -26,6 +32,9 @@ public class UserService {
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Autowired
+	private JavaMailSender mailSender;
 
 	/**
 	 * Create a new user
@@ -45,13 +54,59 @@ public class UserService {
 	 */
 	public User registerUser(String fullName, String screenName, String email, String password, Optional<String> gender,
 			AccountType accountType, Optional<String> description, Optional<String> street, Optional<String> city,
-			Optional<String> state, Optional<String> zip) {
+			Optional<String> state, Optional<String> zip, String siteURL)
+			throws UnsupportedEncodingException, MessagingException {
 		User user = new User();
 		setValues(user, fullName, screenName, email, password, gender, accountType, description, street, city, state,
 				zip);
+		String randomCode = RandomString.make(64);
+		user.setVerificationCode(randomCode);
 		User response = userDao.save(user);
-
+		sendVerificationEmail(user, siteURL);
 		return response;
+	}
+
+	private void sendVerificationEmail(User user, String siteURL)
+			throws MessagingException, UnsupportedEncodingException {
+		String toAddress = user.getEmail();
+		String fromAddress = "cloudeventc@gmail.com";
+		String senderName = "Cloud Event Centre";
+		String subject = "Please verify your email";
+		String content = "Dear [[name]],<br>" + "Please click the link below to verify your registration:<br>"
+				+ "<h3><a href=\"[[URL]]\" target=\"_self\">Verify your email.</a></h3>" + "Thank you,<br>" + "CEC";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+
+		content = content.replace("[[name]]", user.getFullName());
+		String verifyURL = siteURL + "/api/user/verify?code=" + user.getVerificationCode();
+
+		content = content.replace("[[URL]]", verifyURL);
+
+		helper.setText(content, true);
+
+		mailSender.send(message);
+
+		System.out.println("Email has been sent");
+	}
+
+	public boolean verify(String verificationCode) {
+		User user = userDao.findByVerificationCode(verificationCode);
+
+		if (user == null || user.getStatus() == AccountStatus.ACTIVE) {
+			return false;
+		} else {
+			user.setVerificationCode(null);
+			user.setStatus(AccountStatus.ACTIVE);
+			userDao.save(user);
+
+			return true;
+		}
+
 	}
 
 	/**
@@ -174,7 +229,7 @@ public class UserService {
 		if (zip.isPresent())
 			address.setZip(zip.get());
 		user.setAddress(address);
-		user.setStatus(AccountStatus.ACTIVE);
+		user.setStatus(AccountStatus.INACTIVE);
 		user.setAuthProvider(AuthProvider.local);
 	}
 

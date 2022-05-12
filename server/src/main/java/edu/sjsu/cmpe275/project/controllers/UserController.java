@@ -1,11 +1,14 @@
 package edu.sjsu.cmpe275.project.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,8 @@ import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/user")
@@ -89,7 +94,8 @@ public class UserController {
 			@RequestParam String email, @RequestParam String password, @RequestParam AccountType accountType,
 			@RequestParam Optional<String> gender, @RequestParam Optional<String> description,
 			@RequestParam Optional<String> street, @RequestParam Optional<String> city,
-			@RequestParam Optional<String> state, @RequestParam Optional<String> zip) {
+			@RequestParam Optional<String> state, @RequestParam Optional<String> zip, HttpServletRequest request)
+			throws UnsupportedEncodingException, MessagingException {
 		if (fullName == null || screenName == null || email == null || password == null || accountType == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -97,13 +103,25 @@ public class UserController {
 		if (user != null)
 			return new ResponseEntity<>("Email is already in use.", HttpStatus.BAD_REQUEST);
 		else {
+			String siteURL = request.getRequestURL().toString();
+			siteURL = siteURL.replace(request.getServletPath(), "");
 			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, description,
-					street, city, state, zip);
+					street, city, state, zip, siteURL);
 			if (user == null)
 				return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<User>(user, HttpStatus.CREATED);
 		}
 
+	}
+
+	@GetMapping(path = { "/verify" }, params = { "code" })
+	public ResponseEntity<?> verifyUser(@RequestParam String code) {
+		if (userService.verify(code)) {
+			return ResponseEntity.status(302).location(URI.create("http://localhost:3000/")).build();
+		} else {
+			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(
+					"\"message\":\"Sorry, we could not verify account. It maybe already verified, or verification code is incorrect.\"");
+		}
 	}
 
 	/**
@@ -132,6 +150,8 @@ public class UserController {
 					response.put("status", user.getStatus());
 					response.put("eventsRegistered", user.getEventsRegistered());
 					return new ResponseEntity<>(response, HttpStatus.OK);
+//					return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
+//							.body("\"message\":\"Logged in successfully\"");
 				} else
 					return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);
 			} else

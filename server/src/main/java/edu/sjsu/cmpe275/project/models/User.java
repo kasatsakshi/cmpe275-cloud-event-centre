@@ -85,10 +85,12 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
+	@JsonIgnore
 	private Set<EventRequest> signupRequests;
 
 	@OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
+	@JsonIgnore
 	private Set<EventRequest> requestsRecieved;
 
 	/**
@@ -264,6 +266,48 @@ public class User {
 	 */
 	public void setAuthProvider(AuthProvider authProvider) {
 		this.authProvider = authProvider;
+	}
+
+	/**
+	 * @return the verificationCode
+	 */
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	/**
+	 * @param verificationCode the verificationCode to set
+	 */
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	/**
+	 * @return the signupRequests
+	 */
+	public Set<EventRequest> getSignupRequests() {
+		return signupRequests;
+	}
+
+	/**
+	 * @param signupRequests the signupRequests to set
+	 */
+	public void setSignupRequests(Set<EventRequest> signupRequests) {
+		this.signupRequests = signupRequests;
+	}
+
+	/**
+	 * @return the requestsRecieved
+	 */
+	public Set<EventRequest> getRequestsRecieved() {
+		return requestsRecieved;
+	}
+
+	/**
+	 * @param requestsRecieved the requestsRecieved to set
+	 */
+	public void setRequestsRecieved(Set<EventRequest> requestsRecieved) {
+		this.requestsRecieved = requestsRecieved;
 	}
 
 }
