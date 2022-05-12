@@ -11,6 +11,15 @@ function EventPage() {
 
   const [hotels, sethotels] = useState([]);
 
+  const signupevents = ()  =>{
+    //e.preventDefault();
+    axios.post(`/api/event/register`, null, { params: {
+        userId:2,
+        eventId:localStorage.getItem("event_name"),
+      }})
+      .then(response => response.status)
+      .catch(err => alert(err.response.data));
+  }
 
   useEffect(() => {
     try {
@@ -36,6 +45,7 @@ function EventPage() {
     <h5 class="card-title">{hotels.title}</h5>
     <p class="card-text">{hotels.description}</p>
     {/* <a href="#" class="btn btn-primary">Back</a> */}
+    <button onClick={()=> signupevents()} className="btn btn-primary">Sign Up</button>
     <Link to="/eventdash">
         <a class="btn btn-primary">Back</a>
     </Link>
