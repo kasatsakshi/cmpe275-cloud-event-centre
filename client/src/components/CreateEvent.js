@@ -11,8 +11,11 @@ import axios from 'axios';
 import DateTimePicker from 'react-datetime-picker';
 import EventNavbar from "./EventNavbar";
 import './temp.css';
+import {useSelector} from "react-redux";
 
 function CreateEvent() {
+
+  const user = useSelector((state)=>state.user.currentUser);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -29,7 +32,7 @@ function CreateEvent() {
     deadline: '',
     minimumParticipants: '',
     maximumParticipants: '',
-    creatorId: '',
+    creatorId: user.id,
     street: '',
     city: '',
     state: '',
@@ -216,7 +219,7 @@ function CreateEvent() {
             value={zip}
             onChange={e => onChange(e)}
           />
-          <TextField
+          {/* <TextField
             required
             id="creatorId"
             placeholder='Creater Id'
@@ -224,7 +227,7 @@ function CreateEvent() {
             name='creatorId'
             value={creatorId}
             onChange={e => onChange(e)}
-          />
+          /> */}
           <TextField
             required
             id="minPart"
@@ -252,7 +255,8 @@ function CreateEvent() {
             value={fee}
             onChange={e => onChange(e)}
           />
-          <TextField
+
+          {/* <TextField
             required
             id="admissionPolicy"
             placeholder='Admission Poilicy'
@@ -260,8 +264,18 @@ function CreateEvent() {
             name='admissionPolicy'
             value={admissionPolicy}
             onChange={e => onChange(e)}
-          />
-
+          /> */}
+                <div className='register-input-fields'>
+                   <select 
+                   className='register-input-fields'
+                       value={admissionPolicy}
+                       name='admissionPolicy'
+                       onChange={e => onChange(e)}>
+                        <option value="default">Enter Policy</option>
+                      <option value="FCFS">FCFS</option>
+                       <option value="Approval_Required">Approval_Required</option>
+                     </select>
+                     </div>
           <div className="form-group" >
                     <input type="submit"  className="form-submit"  />
             </div>

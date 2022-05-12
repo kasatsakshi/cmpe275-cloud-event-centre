@@ -10,6 +10,7 @@ function EventDashboard() {
 
 
   const [hotels, sethotels] = useState([]);
+  const [events, setEvents] = useState([]);
   const [duplicatehotes, setduplicatehotes] = useState([]);
   const [loading, setloading] = useState(false);
   const [searchkey, setsearchkey] = useState('');
@@ -46,16 +47,16 @@ function EventDashboard() {
         sethotels(response.data);
         setduplicatehotes(response.data);
         console.log(response.data);
-        
+        setEvents(response.data.filter((li, idx, self) => self.map(itm => itm.address.city).indexOf(li.address.city) === idx));
       });
       //const rooms = axios.get("/api/event/all");
-      console.log("Ho");
+      
       console.log(hotels);
       //sethotels(rooms);
       setduplicatehotes(hotels)
       console.log(location);
       
-      duplicatehotes.forEach((item) => {
+      events.forEach((item) => {
         var loc = {
           "city": item.address.city
         };  
@@ -137,9 +138,10 @@ function EventDashboard() {
             
           <select className="form-control m-2" value={location} onChange={(e)=>{filterByLocation(e.target.value)}} >
 
-          <option value="all">All</option>
-              <option value="San Jose">San Jose</option>
-              <option value="Milpitas">Milpitas</option>
+          {events.map((data, idx) => (
+            
+<option key={idx}>{data.address.city}</option>
+))}
             </select>
         </div>
 
@@ -151,6 +153,7 @@ function EventDashboard() {
               <option value="ACTIVE">Active</option>
               <option value="FINISHED">Finished</option>
               <option value="REGISTRATION_OPEN">Open</option>
+              <option value="CANCELLED">Cancelled</option>
             </select>
           </div>
 
@@ -202,11 +205,11 @@ function EventDashboard() {
                 <div class="card-body">
                   <h5 class="card-title">{room.title}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{room.startTime} to {room.endTime}</h6>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        
                   <p href="#" class="card-link">{room.address.city}</p>
                   <p href="#" class="card-link">{room.description}</p>
                   <Link to="/eventpage">
-                        <button class="btn btn-primary" onClick={()=> localStorage.setItem('event_name',room.id)}>Order!</button>
+                        <button class="btn btn-primary" onClick={()=> localStorage.setItem('event_name',room.id)}>Click!</button>
                   </Link>
                 </div>
               </div>
