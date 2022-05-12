@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Signup from './components/Signup';
 import Register from './components/Register';
@@ -9,39 +9,25 @@ import CreateEvent from './components/CreateEvent';
 import EventDashboard from './components/EventDashboard';
 import EventPage from './components/EventPage';
 import Temp from './components/Temp';
+import { useSelector } from "react-redux";
+
 
 function App() {
+  const user = useSelector((state) => state.user.currentUser);
+  console.log("In app the user: " + JSON.stringify(user));
   return (
-    <Router>
-      <div className="App">
-        <header className="App-header">
-        </header>
-        {/* <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes> */}
+    <div className="App">
+      <Router>
         <Routes>
-          <Route path="/" element={<Signup />} />
-        </Routes>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-        </Routes>
-        <Routes>
-          <Route path="/oauth" element={<Oauth />} />
-        </Routes>
-        <Routes>
+          <Route path="/" element={user ? <Navigate to="eventdash" /> : <Signup />} />
+          <Route path="/register" element={user ? <EventDashboard /> : <Register />} />
           <Route path="/createevent" element={<CreateEvent />} />
+          <Route path="/eventdash" element={<EventDashboard />} />
+          <Route path="/temp" element={<Temp />} />
+          <Route path="/eventpage" element={<EventPage />} />
         </Routes>
-        <Routes>
-        <Route path="/eventdash" element={<EventDashboard />}/>
-        </Routes>
-        <Routes>
-        <Route path="/temp" element={<Temp />}/>
-        </Routes>
-        <Routes>
-        <Route path="/eventpage" element={<EventPage />}/>
-        </Routes>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 

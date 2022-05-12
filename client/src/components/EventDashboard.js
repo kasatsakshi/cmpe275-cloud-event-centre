@@ -13,12 +13,13 @@ function EventDashboard() {
   const [duplicatehotes, setduplicatehotes] = useState([]);
   const [loading, setloading] = useState(false);
   const [searchkey, setsearchkey] = useState('');
-  const [location, setLocation] = useState('all')
+  const [location, setLocation] = useState([])
   const [searchlockey, setsearchlockey] = useState('');
   const[type , settype]=useState('all')
   //const dateObj = new Date(2000, 0, 1);
   const [fromDate, setFromDate] = useState(new Date().toLocaleDateString('en-ca'));
   const [toDate, setToDate] = useState("");
+  var locat=[{city: 'San Jose'}]; 
 
   function assignFromDate (e){
     //console.log(e.target.value);
@@ -26,14 +27,14 @@ function EventDashboard() {
     //setFromDate(e);
     console.log(e);
     console.log(fromDate);
-    const events = duplicatehotes.filter(a => new Date(a.startDate) - new Date(e) >= 0);
+    const events = duplicatehotes.filter(a => new Date(a.startTime) - new Date(e) >= 0);
      sethotels(events);
-     setduplicatehotes(events);
+     //setduplicatehotes(events);
   };
 
   function ToDate(e){
     setToDate(e);
-    const events = duplicatehotes.filter(a => new Date(a.endDate) - new Date(e) <= 0);
+    const events = duplicatehotes.filter(a => new Date(a.endTime) - new Date(e) <= 0);
      sethotels(events);
   }
 
@@ -43,12 +44,31 @@ function EventDashboard() {
       setloading(true);
       axios.get("/api/event/all").then((response) => {
         sethotels(response.data);
+        setduplicatehotes(response.data);
+        console.log(response.data);
+        
       });
       //const rooms = axios.get("/api/event/all");
+      console.log("Ho");
       console.log(hotels);
       //sethotels(rooms);
       setduplicatehotes(hotels)
-      setloading(false);
+      console.log(location);
+      
+      duplicatehotes.forEach((item) => {
+        var loc = {
+          "city": item.address.city
+        };  
+        if (!locat.includes(loc)){
+          //console.log(loc);
+          locat.push( loc );
+          }
+      });
+      locat = locat.filter((li, idx, self) => self.map(itm => itm.city).indexOf(li.city) === idx);
+       setLocation(locat);
+       console.log(location);
+
+       setloading(false);
     } catch (error) {
       console.log(error);
       setloading(false);
@@ -115,15 +135,13 @@ function EventDashboard() {
 
           <div className="col-md-2">
             
-<select className="form-control m-2" value={location} onChange={(e)=>{filterByLocation(e.target.value)}} >
+          <select className="form-control m-2" value={location} onChange={(e)=>{filterByLocation(e.target.value)}} >
 
-<option value="all">All</option>
-  <option value="Montery">Montery</option>
-  <option value="san Jose">San Jose</option>
-  <option value="san Francisco">San Francisco</option>
-  
-</select>
-          </div>
+          <option value="all">All</option>
+              <option value="San Jose">San Jose</option>
+              <option value="Milpitas">Milpitas</option>
+            </select>
+        </div>
 
 
           <div className="col-md-2">
@@ -147,7 +165,7 @@ function EventDashboard() {
             value={fromDate}
             onChange={(e)=>{assignFromDate(e.target.value)}}
             className="form-control datepicker"
-            style={{ width: "150px" }}
+            
           />
         </div>
       </div>
@@ -164,7 +182,7 @@ function EventDashboard() {
             placeholder="Select Date"
             onChange={e => ToDate(e.target.value)}
             className="form-control datepicker"
-            style={{ width: "150px" }}
+            
           />
         </div>
       </div>
@@ -176,18 +194,16 @@ function EventDashboard() {
     
 
       <div className="row justify-content-center">
-        {loading ? (
-          <Register />
-        ) : (
+        {
           hotels.map((room) => {
             return (
                 <div class="row">
                 <div class="card" style={{width:'1002px'}}>
                 <div class="card-body">
                   <h5 class="card-title">{room.title}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">{room.startTime}</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">{room.startTime} to {room.endTime}</h6>
                   <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <p href="#" class="card-link">{room.state}</p>
+                  <p href="#" class="card-link">{room.address.city}</p>
                   <p href="#" class="card-link">{room.description}</p>
                   <Link to="/eventpage">
                         <button class="btn btn-primary" onClick={()=> localStorage.setItem('event_name',room.id)}>Order!</button>
@@ -197,7 +213,7 @@ function EventDashboard() {
               </div>
             );
           })
-        )}
+        }
       </div>
       
     </div>
