@@ -129,8 +129,8 @@ public class UserController {
 					response.put("fullName", user.getFullName());
 					response.put("screenName", user.getScreenName());
 					response.put("email", user.getEmail());
-					response.put("email", user.getStatus());
-					response.put("email", user.getEventsRegistered());
+					response.put("status", user.getStatus());
+					response.put("eventsRegistered", user.getEventsRegistered());
 					return new ResponseEntity<>(response, HttpStatus.OK);
 				} else
 					return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);

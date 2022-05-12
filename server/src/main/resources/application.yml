@@ -13,6 +13,17 @@ spring:
     hibernate:
       ddl-auto: update
       
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: cloudeventc@gmail.com
+    password: Sjsu@123456
+    properties:
+      mail:
+       smtp:
+        auth: true
+        starttls:
+          enable: true
 #  security:
 #      oauth2:
 #        client:
