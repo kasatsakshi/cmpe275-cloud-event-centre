@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,30 +20,82 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "FORUMS")
-@JsonPropertyOrder({ "id", "type", "status", "event_id", "question_id"})
+@JsonPropertyOrder({ "id", "type", "status", "event_id", "question_id" })
 public class Forum {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private ForumType type;
-	
+
 	@Column
 	private ForumStatus status;
-	
+
 	@ManyToOne
-	@JoinColumn(name="event_id", nullable=false)
+	@JoinColumn(name = "event_id", nullable = false)
 	private Event event;
-	
-	@OneToMany(mappedBy="forum", fetch=FetchType.EAGER)
+
+	@OneToMany(mappedBy = "forum", fetch = FetchType.EAGER)
 	private Set<Question> questions;
-	
-	/**
-	 * @return the id
-	 */
+
+	public Forum() {
+
+	}
+
+	public Forum(ForumType type, Event event) {
+		super();
+		this.type = type;
+		this.status = ForumStatus.ACTIVE;
+		this.event = event;
+		this.questions = new HashSet<Question>();
+	}
+
 	public Long getId() {
 		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public ForumType getType() {
+		return type;
+	}
+
+	public void setType(ForumType type) {
+		this.type = type;
+	}
+
+	public ForumStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ForumStatus status) {
+		this.status = status;
+	}
+
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public Set<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(Set<Question> questions) {
+		this.questions = questions;
+	}
+
+	@Override
+	public String toString() {
+		return "Forum [id=" + id + ", type=" + type + ", status=" + status + ", event=" + event + ", questions="
+				+ questions + "]";
+	}
+
 }
