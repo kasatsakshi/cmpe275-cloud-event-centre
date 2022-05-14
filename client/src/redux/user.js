@@ -17,6 +17,7 @@ export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
     const res = await axios.post(`/api/user`, null, { params: user });
+    console.log(JSON.stringify(res));
     dispatch(loginSuccess(res.data));
   } catch (err) {
     dispatch(loginFailure());

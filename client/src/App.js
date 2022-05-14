@@ -10,6 +10,7 @@ import EventDashboard from './components/EventDashboard';
 import EventPage from './components/EventPage';
 import Temp from './components/Temp';
 import { useSelector } from "react-redux";
+import VerifyEmail from './components/VerifyEmail';
 
 
 function App() {
@@ -19,8 +20,8 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={user ? <Navigate to="eventdash" /> : <Signup />} />
-          <Route path="/register" element={user ? <EventDashboard /> : <Register />} />
+          <Route path="/" element={user && user.status == "ACTIVE" ? <Navigate to="eventdash" /> : <Signup />} />
+          <Route path="/register" element={user && user.status == "INACTIVE" ? <VerifyEmail /> : <EventDashboard />} />
           <Route path="/createevent" element={<CreateEvent />} />
           <Route path="/eventdash" element={<EventDashboard />} />
           <Route path="/temp" element={<Temp />} />

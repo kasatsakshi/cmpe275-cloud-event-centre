@@ -93,6 +93,12 @@ public class User {
 	@Fetch(value = FetchMode.SUBSELECT)
 	@JsonIgnore
 	private Set<EventRequest> requestsRecieved;
+	
+	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+	private Set<Answer> answers;
+	
+	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+	private Set<Question> questions;
 
 	/**
 	 * @return the id
