@@ -14,6 +14,7 @@ import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
 import edu.sjsu.cmpe275.project.types.EventStatus;
+import edu.sjsu.cmpe275.project.types.ForumType;
 
 @Service
 public class EventService {
@@ -25,6 +26,9 @@ public class EventService {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	ForumService forumService;
 
 	/**
 	 * Find event by ID
@@ -85,6 +89,8 @@ public class EventService {
 		setValues(event, title, startTime, endTime, deadline, minimumParticipants, maximumParticipants, fee,
 				admissionPolicy, creator, description, street, city, state, zip, status);
 		Event response = eventDao.save(event);
+
+		forumService.createForum(event, ForumType.SIGNUP);
 
 		return response;
 	}
@@ -148,7 +154,7 @@ public class EventService {
 		Event response = eventDao.save(event);
 		return response;
 	}
-	
+
 	public List<Event> cancelEventTrigger(LocalDateTime endTime) {
 		List<Event> cancellableEvents = eventDao.findByEndTimeBefore(endTime);
 		cancellableEvents.forEach((event) -> cancelEvent(event));
