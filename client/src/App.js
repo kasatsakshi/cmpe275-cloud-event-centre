@@ -47,7 +47,7 @@ function App() {
           />
           <Route
             path="/verifyAccount"
-            element={user ? <EventPage /> : <VerifyAccount />}
+            element={user ? <Navigate to="/eventdash" /> : <VerifyAccount />}
           />
         </Routes>
       </Router>
