@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 
 function EventDashboard() {
-  const [hotels, sethotels] = useState([]);
+  const [eventsdup, seteventsdup] = useState([]);
   const [events, setEvents] = useState([]);
-  const [duplicatehotes, setduplicatehotes] = useState([]);
+  const [duplicateevents, setduplicateevents] = useState([]);
   const [loading, setloading] = useState(false);
   const [searchkey, setsearchkey] = useState("");
   const [location, setLocation] = useState([]);
@@ -29,27 +29,27 @@ function EventDashboard() {
     //setFromDate(e);
     console.log(e);
     console.log(fromDate);
-    const events = duplicatehotes.filter(
+    const events = duplicateevents.filter(
       (a) => new Date(a.startTime) - new Date(e) >= 0
     );
-    sethotels(events);
-    //setduplicatehotes(events);
+    seteventsdup(events);
+    //setduplicateevents(events);
   }
 
   function ToDate(e) {
     setToDate(e);
-    const events = duplicatehotes.filter(
+    const events = duplicateevents.filter(
       (a) => new Date(a.endTime) - new Date(e) <= 0
     );
-    sethotels(events);
+    seteventsdup(events);
   }
 
   useEffect(() => {
     try {
       setloading(true);
       axios.get("/api/event/all").then((response) => {
-        sethotels(response.data);
-        setduplicatehotes(response.data);
+        seteventsdup(response.data);
+        setduplicateevents(response.data);
         console.log(response.data);
         setEvents(
           response.data.filter(
@@ -61,9 +61,9 @@ function EventDashboard() {
       });
       //const rooms = axios.get("/api/event/all");
 
-      console.log(hotels);
-      //sethotels(rooms);
-      setduplicatehotes(hotels);
+      console.log(eventsdup);
+      //seteventsdup(rooms);
+      setduplicateevents(eventsdup);
       console.log(location);
 
       events.forEach((item) => {
@@ -89,38 +89,38 @@ function EventDashboard() {
   }, []);
 
   function filterBySearch() {
-    const dupdate = duplicatehotes.filter((room) =>
+    const dupdate = duplicateevents.filter((room) =>
       room.title.toLowerCase().includes(searchkey)
     );
-    sethotels(dupdate);
+    seteventsdup(dupdate);
   }
   function filterByStartDate() {
-    const events = duplicatehotes.filter(
+    const events = duplicateevents.filter(
       (a) => new Date(a.startDate) - new Date() > 0
     );
-    sethotels(events);
+    seteventsdup(events);
   }
   function filterByLocation(e) {
     setLocation(e);
     if (e !== "all") {
-      const dupdate = duplicatehotes.filter((room) =>
+      const dupdate = duplicateevents.filter((room) =>
         room.address.city.toLowerCase().includes(e.toLowerCase())
       );
-      sethotels(dupdate);
+      seteventsdup(dupdate);
     } else {
-      sethotels(duplicatehotes);
+      seteventsdup(duplicateevents);
     }
   }
 
   function filterByType(e) {
     settype(e);
     if (e !== "all") {
-      const dupdate = duplicatehotes.filter((room) =>
+      const dupdate = duplicateevents.filter((room) =>
         room.status.toLowerCase().includes(e.toLowerCase())
       );
-      sethotels(dupdate);
+      seteventsdup(dupdate);
     } else {
-      sethotels(duplicatehotes);
+      seteventsdup(duplicateevents);
     }
   }
 
@@ -134,7 +134,7 @@ function EventDashboard() {
               <input
                 type="text"
                 className="form-control i2 m-2"
-                placeholder="Search Rooms"
+                placeholder="Search Events"
                 value={searchkey}
                 onKeyUp={filterBySearch}
                 onChange={(e) => {
@@ -209,7 +209,7 @@ function EventDashboard() {
         </div>
 
         <div className="row justify-content-center">
-          {hotels.map((room) => {
+          {eventsdup.map((room) => {
             return (
               <div class="row" style={{ padding: "20px" }}>
                 <div class="card" style={{ width: "300px", margin: "20px" }}>
