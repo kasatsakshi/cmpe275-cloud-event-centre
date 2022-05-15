@@ -30,6 +30,27 @@ function Account() {
   const [recieved, setRecieved] = useState("");
   const [pending, setPending] = useState("")
 
+  const approve = (id) => {
+    axios
+      .put(`/api/eventrequest/accept/${id}`, null, {})
+      .then((response) => {
+        alert("Request Accepted");
+        return response.status
+      })
+      .catch((err) => alert(JSON.stringify(err.response.data)));
+  };
+
+  const reject = (id) => {
+    //e.preventDefault();
+    axios
+      .put(`/api/eventrequest/reject/${id}`, null, {})
+      .then((response) => {
+        alert("Request Rejected");
+        return response.status
+      })
+      .catch((err) => alert(JSON.stringify(err.response.data)));
+  };
+
   function getEvent() {
     try {
       axios
@@ -42,7 +63,6 @@ function Account() {
       axios
         .get("/api/user/signuprequests/" + user.id)
         .then((response) => {
-          console.log(response.data);
           setPending(response.data);
         });
 
@@ -64,7 +84,7 @@ function Account() {
           <div className='account-divs'>
             <h5>Recieved Requests</h5>
             {recieved.map((request) => {
-              { console.log(request) }
+
               return (
                 <Card variant="outlined" sx={{ minWidth: 275 }}>
                   <CardContent>
@@ -76,8 +96,17 @@ function Account() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Approve</Button>
-                    <Button size="small">Reject</Button>
+                    <Button
+                      disabled={request.status != "PENDING"}
+                      size="small"
+                      onClick={() => approve(request.id)}>
+                      Approve
+                    </Button>
+                    <Button size="small"
+                      disabled={request.status != "PENDING"}
+                      onClick={() => reject(request.id)}>
+                      Reject
+                    </Button>
                   </CardActions>
                 </Card>
               );
@@ -88,7 +117,7 @@ function Account() {
           <div className='account-divs'>
             <h5>Requests Sent for Approval</h5>
             {pending.map((request) => {
-              { console.log(request) }
+
               return (
                 <Card variant="outlined" sx={{ minWidth: 275 }}>
                   <CardContent>
