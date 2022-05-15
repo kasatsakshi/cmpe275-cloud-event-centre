@@ -178,6 +178,7 @@ function EventDashboard() {
                 <option value="ACTIVE">Active</option>
                 <option value="FINISHED">Finished</option>
                 <option value="REGISTRATION_OPEN">Open</option>
+                <option value="REGISTRATION_CLOSED">Closed</option>
                 <option value="CANCELLED">Cancelled</option>
               </select>
             </div>
