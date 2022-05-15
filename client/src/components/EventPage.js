@@ -6,9 +6,24 @@ import "./EventPage.css";
 import { Link } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 import { useSelector } from "react-redux";
+import styled from "styled-components";
 import { Navigation } from "react-minimal-side-navigation";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import Sidebar from "./Sidebar";
+
+const Button = styled.button`
+  width: 200px;
+  border: none;
+  padding: 15px 20px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 10px;
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+`;
 
 function EventPage() {
   const user = useSelector((state) => state.user.currentUser);
@@ -81,7 +96,19 @@ function EventPage() {
             <div className="event-participants event-text">
               Current number of participants: {event.participants.length}
             </div>
-            <button onClick={() => signupevents()}>Sign Up</button>
+            <Button
+              disabled={event.status !== "REGISTRATION_OPEN"}
+              className="event-button"
+              onClick={() => signupevents()}
+            >
+              Sign Up
+            </Button>
+            <Button className="event-button" onClick={() => signupevents()}>
+              Signup Forum
+            </Button>
+            <Button className="event-button" onClick={() => signupevents()}>
+              Participant Forum
+            </Button>
           </div>
         </div>
       ) : (
