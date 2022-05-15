@@ -1,63 +1,77 @@
 import React, { useState, useEffect } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from "./Register";
 import axios from "axios";
-import './temp.css';
+import './EventPage.css';
 import { Link } from 'react-router-dom';
 import EventNavbar from "./EventNavbar";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import { Navigation } from 'react-minimal-side-navigation';
+import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
+import Sidebar from "./Sidebar";
 
 function EventPage() {
-   const user = useSelector((state)=>state.user.currentUser);
+  const user = useSelector((state) => state.user.currentUser);
+  const [loading, setloading] = useState(false);
+  const [event, setEvent] = useState([]);
 
-  const [hotels, sethotels] = useState([]);
+  function getEvent() {
+    try {
+      setloading(true);
+      axios.get("/api/event/" + localStorage.getItem("eventId")).then((response) => {
+        console.log(response.data);
+        setEvent(response.data);
+      });
+      setloading(false);
+    } catch (error) {
+      console.log(error);
+      setloading(false);
+    }
+  }
 
-  const signupevents = ()  =>{
+  useEffect(() => {
+    getEvent()
+  }, []);
+
+  const signupevents = () => {
     //e.preventDefault();
-    axios.post(`/api/event/register`, null, { params: {
-        userId:user.id,
-        eventId:localStorage.getItem("event_name"),
-      }})
+    axios.post(`/api/event/register`, null, {
+      params: {
+        userId: user.id,
+        eventId: localStorage.getItem("eventId"),
+      }
+    })
       .then(response => response.status)
       .catch(err => alert(err.response.data));
   }
 
-  useEffect(() => {
-    try {
-        axios.get("/api/event/"+localStorage.getItem("event_name")).then((response) => {
-        sethotels(response.data);
-      });
-      console.log(hotels);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  
   return (
-    <body>
-         <EventNavbar/>
-    
-    <div class="card text-center">
-  <div class="card-header">
-    {hotels.status}
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">{hotels.title}</h5>
-    <p class="card-text">{hotels.description}</p>
-    {/* <a href="#" class="btn btn-primary">Back</a> */}
-    <button onClick={()=> signupevents()} className="btn btn-primary">Sign Up</button>
-    <Link to="/eventdash">
-        <a class="btn btn-primary">Back</a>
-    </Link>
-  </div>
-  <div class="card-footer text-muted">
-    {hotels.startTime} to {hotels.endTime}
-  </div>
-</div>
+    <div>
+      <EventNavbar />
+      <div className="event-page-container">
+        <div className="event-sidebar">
+          <Sidebar />
+        </div>
+        <div className="event-container">
+          <h1 className="event-title">{event.title}</h1>
+          <div className="event-description">{event.description}</div>
+          {/* <div className="event-owner event-text">by: {event.creator.screenName}</div> */}
+          <div className="event-date event-text">
+            <div className="event-start event-text">Start Time: {event.startTime}</div>
+            <div className="event-text">End time: {event.endTime}</div>
+          </div>
 
-      
-    </body>
+
+          <div className="event-fee event-text">Fee: {event.fee}$</div>
+          <div className="event-date">
+            <div className="event-start event-text">Min participant: {event.minimumParticipants}</div>
+            <div className="event-text">Max participant: {event.maximumParticipants}</div>
+          </div>
+          {/* <div className="event-participants event-text">Current number of participants: {event.participants.length}</div> */}
+          <button onClick={() => signupevents()}>Sign Up</button>
+        </div>
+      </div>
+    </div>
   );
 }
 

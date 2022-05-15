@@ -84,6 +84,9 @@ public class Event {
 	@Fetch(value = FetchMode.SUBSELECT)
 	@JsonIgnore
 	private Set<EventRequest> signupRequests;
+	
+	@OneToMany(mappedBy="event")
+    private Set<Forum> forums;
 
 	/**
 	 * @return the id
