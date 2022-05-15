@@ -39,3 +39,8 @@
 
         overflow: auto;
   }
+
+  .nav-date{
+    margin-left: 600px;
+    color: white;
+  }

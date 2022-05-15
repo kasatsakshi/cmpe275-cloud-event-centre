@@ -5,9 +5,28 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/user";
 import eventLogo from "../eventcloudlogo.png";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import TextField from '@mui/material/TextField';
+import axios from "axios";
+import moment from "moment";
 
 function EventNavbar() {
   const dispatch = useDispatch();
+  const [mimicDate, setMimicDate] = React.useState(null);
+
+  const mimicTime = (newValue) => {
+    setMimicDate(newValue);
+    console.log(newValue);
+    console.log(moment(newValue).format('YYYY-MM-DD HH:mm:ss'))
+    axios.post('/api/time', null, {
+      params: {
+        dateTime: moment(newValue).format('YYYY-MM-DD HH:mm:ss.SSSSSS')
+      }
+    })
+  }
+
   return (
     <nav
       className="navbar navbar-expand-sm bg-dark navbar-dark"
@@ -47,6 +66,19 @@ function EventNavbar() {
           >
             Logout
           </Link>
+        </li>
+        <li className="nav-item nav-date">
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Mimic time"
+              value={mimicDate}
+              color="primary"
+              onChange={(newValue) => {
+                mimicTime(newValue)
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
         </li>
       </ul>
     </nav>

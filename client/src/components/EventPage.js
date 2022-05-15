@@ -30,7 +30,21 @@ function EventPage() {
   const [loading, setloading] = useState(false);
   const [event, setEvent] = useState("");
 
-  function getEvent() {
+  // function getEvent() {
+  //   try {
+  //     setloading(true);
+  //     axios.get("/api/event/" + localStorage.getItem("eventId")).then((response) => {
+  //       console.log(response.data);
+  //       setEvent(response.data);
+  //     });
+  //     setloading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setloading(false);
+  //   }
+  // }
+
+  useEffect(() => {
     try {
       setloading(true);
       axios
