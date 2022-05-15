@@ -13,8 +13,8 @@ function EventDashboard() {
   const [loading, setloading] = useState(false);
   const [searchkey, setsearchkey] = useState("");
   const [location, setLocation] = useState([]);
-  const [searchlockey, setsearchlockey] = useState("");
   const [type, settype] = useState("all");
+  const [city, setCity] = useState("");
   //const dateObj = new Date(2000, 0, 1);
   const [fromDate, setFromDate] = useState(
     new Date().toLocaleDateString("en-ca")
@@ -38,10 +38,13 @@ function EventDashboard() {
 
   function ToDate(e) {
     setToDate(e);
-    const events = duplicateevents.filter(
+    let events1 = duplicateevents.filter(
       (a) => new Date(a.endTime) - new Date(e) <= 0
     );
-    seteventsdup(events);
+    events1 = events1.filter(
+      (a) => new Date(a.endTime) - new Date(fromDate) >= 0
+    );
+    seteventsdup(events1);
   }
 
   useEffect(() => {
@@ -92,7 +95,16 @@ function EventDashboard() {
     const dupdate = duplicateevents.filter((room) =>
       room.title.toLowerCase().includes(searchkey)
     );
-    seteventsdup(dupdate);
+   // seteventsdup(dupdate);
+    if(city !== "" && city !== 'all'){
+    const dupdate2 = dupdate.filter((room) =>
+    room.address.city.toLowerCase().includes(city.toLowerCase())
+      );
+      seteventsdup(dupdate2);
+    }
+    else{
+      seteventsdup(dupdate);
+    }
   }
   function filterByStartDate() {
     const events = duplicateevents.filter(
@@ -101,6 +113,7 @@ function EventDashboard() {
     seteventsdup(events);
   }
   function filterByLocation(e) {
+    setCity(e);
     setLocation(e);
     if (e !== "all") {
       const dupdate = duplicateevents.filter((room) =>
@@ -157,9 +170,11 @@ function EventDashboard() {
                   filterByLocation(e.target.value);
                 }}
               >
+                <option value="all">All</option>
                 {events.map((data, idx) => (
                   <option key={idx}>{data.address.city}</option>
                 ))}
+                
               </select>
             </div>
 
