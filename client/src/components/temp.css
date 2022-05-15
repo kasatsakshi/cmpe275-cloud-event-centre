@@ -46,7 +46,11 @@
   }
 
   .nav-accountCircle{
-    color: grey;
+    color: black;
     size: large;
     margin-left: 30px;
+}
+
+.nav-logo {
+  margin-left: 120px;
 }

@@ -58,7 +58,7 @@ function EventNavbar() {
       }}
     >
       <ul className="navbar-nav" style={{ color: "white" }}>
-        <li className="nav-item">
+        <li className="nav-item nav-logo">
           <Link to="/" className="nav-link">
             <img className="navbar-logo" src={eventLogo} alt="Events" />
           </Link>
@@ -112,7 +112,6 @@ function EventNavbar() {
             style={{ height: "100%", color: "white" }}
           >
             <AccountCircle
-              color="primary"
               sx={{ width: 56, height: 40 }}
               className="nav-accountCircle"
             />
