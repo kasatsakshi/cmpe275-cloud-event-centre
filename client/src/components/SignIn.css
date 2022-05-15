@@ -85,7 +85,7 @@ input {
 	border: none;
 	padding: 12px 15px;
 	margin: 8px 0;
-	width: 100%;
+	width: 50%;
 }
 
 .container {
@@ -95,26 +95,33 @@ input {
 			0 10px 10px rgba(0,0,0,0.22);
 	position: relative;
 	overflow: hidden;
-	width: 768px;
+	width: 80%;
 	max-width: 100%;
 	min-height: 480px;
 }
 
 .form-container {
-	position: absolute;
-	top: 0;
+	/* position: absolute; */
+	/* top: 0; */
 	height: 100%;
 }
 
 .sign-in-container {
 	left: 0;
 	width: 50%;
+	margin-top: 20px;
+	border-right: rgba(86, 85, 85, 0.901);
+	border-bottom: white;
+	border-left: white;
+	border-top: white;
+	border-style: double;
 	z-index: 2;
 }
 
 .sign-up-container {
 	right: 0;
 	width: 50%;
+	margin-top: 20px;
 	z-index: 2;
 }
 
@@ -176,9 +183,9 @@ input {
 
 
 .social-container {
-	margin: 20px 0;
+	margin: 20px;
 }
-
+/* 
 .social-container a {
 	border: 1px solid #DDDDDD;
 	border-radius: 50%;
@@ -188,7 +195,7 @@ input {
 	margin: 0 5px;
 	height: 40px;
 	width: 40px;
-}
+} */
 
 .or-container {
   align-items: center;

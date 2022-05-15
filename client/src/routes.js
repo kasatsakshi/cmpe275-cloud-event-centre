@@ -2,18 +2,18 @@ import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import EventDashboard from "./components/EventDashboard";
 import Register from "./components/Register";
-import Signup from "./components/Signup";
+import SignIn from "./components/SignIn";
 
 class Routes extends Component {
-    render() {
-      return (
-          <div>
-        <Route exact path="/" component={Signup} />
+  render() {
+    return (
+      <div>
+        <Route exact path="/" component={SignIn} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/eventdash" component={EventDashboard} />
-        </div>
-        );
-    }
+      </div>
+    );
   }
-  
-  export default Routes;
+}
+
+export default Routes;
