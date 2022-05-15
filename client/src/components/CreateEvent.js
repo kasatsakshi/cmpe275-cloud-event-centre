@@ -115,20 +115,11 @@ function CreateEvent() {
         <div>
           <form onSubmit={(e) => onSubmit(e)}>
             <h2>Create Event</h2>
-            <div className="register-radio">
-              {/* <FormLabel className='register-label' id="account-type">Account Type</FormLabel> */}
-              {/* <RadioGroup
-              row
-              aria-labelledby="account-type"
-              name="account-type-buttons"
-            >
-              <FormControlLabel value="person" control={<Radio />} label="Person" />
-              <FormControlLabel value="organization" control={<Radio />} label="Organization" />
-            </RadioGroup> */}
-            </div>
+            <div className="register-radio"></div>
 
             <TextField
               required
+              autoFocus
               id="title"
               label="Title"
               className="register-input-fields"
@@ -150,76 +141,114 @@ function CreateEvent() {
               onChange={(e) => onChange(e)}
               style={{ margin: "10px" }}
             />
-
-            <span
-              style={{ opacity: "0.6", fontSize: "13px", marginTop: "15px" }}
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
             >
-              <b>from</b>
-            </span>
-            <input
-              type="date"
-              name="startTime"
-              id="startTime"
-              min={new Date().toLocaleDateString("en-ca")}
-              value={startTime}
-              onChange={(e) => onChange(e)}
-              className="form-control datepicker"
-            />
-
-            <input
-              type="time"
-              name="stTime"
-              value={stTime}
-              onChange={(e) => onChange(e)}
-            />
-
-            <span
-              style={{ opacity: "0.6", fontSize: "13px", marginTop: "15px" }}
+              <span
+                style={{
+                  width: "20%",
+                  opacity: "0.6",
+                  fontSize: "13px",
+                  margin: "15px",
+                }}
+              >
+                <b>Start Date</b>
+              </span>
+              <input
+                type="date"
+                name="startTime"
+                id="startTime"
+                min={new Date().toLocaleDateString("en-ca")}
+                value={startTime}
+                onChange={(e) => onChange(e)}
+                className="form-control datepicker"
+                style={{ margin: "15px" }}
+              />
+              <input
+                type="time"
+                name="stTime"
+                value={stTime}
+                onChange={(e) => onChange(e)}
+                style={{ margin: "15px", padding: "6px 12px 6px 12px" }}
+              />
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
             >
-              <b>to</b>
-            </span>
-            <input
-              type="date"
-              name="endTime"
-              min={startTime}
-              id="endTime"
-              value={endTime}
-              placeholder="Select Date"
-              onChange={(e) => onChange(e)}
-              className="form-control datepicker"
-            />
-
-            <input
-              type="time"
-              name="enTime"
-              value={enTime}
-              onChange={(e) => onChange(e)}
-            />
-
-            <span
-              style={{ opacity: "0.6", fontSize: "13px", marginTop: "15px" }}
+              <span
+                style={{
+                  width: "20%",
+                  opacity: "0.6",
+                  fontSize: "13px",
+                  margin: "15px",
+                }}
+              >
+                <b>End Date</b>
+              </span>
+              <input
+                type="date"
+                name="endTime"
+                min={startTime}
+                id="endTime"
+                value={endTime}
+                placeholder="Select Date"
+                onChange={(e) => onChange(e)}
+                className="form-control datepicker"
+                style={{ margin: "15px" }}
+              />
+              <input
+                type="time"
+                name="enTime"
+                value={enTime}
+                onChange={(e) => onChange(e)}
+                style={{ margin: "15px", padding: "6px 12px 6px 12px" }}
+              />
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
             >
-              <b>Deadline</b>
-            </span>
-            <input
-              type="date"
-              name="deadline"
-              min={new Date().toLocaleDateString("en-ca")}
-              max={endTime}
-              id="deadline"
-              value={deadline}
-              placeholder="Select Date"
-              onChange={(e) => onChange(e)}
-              className="form-control datepicker"
-            />
-
-            <input
-              type="time"
-              name="dTime"
-              value={dTime}
-              onChange={(e) => onChange(e)}
-            />
-
+              <span
+                style={{
+                  width: "20%",
+                  opacity: "0.6",
+                  fontSize: "13px",
+                  margin: "15px",
+                }}
+              >
+                <b>Deadline</b>
+              </span>
+              <input
+                type="date"
+                name="deadline"
+                min={new Date().toLocaleDateString("en-ca")}
+                max={endTime}
+                id="deadline"
+                value={deadline}
+                placeholder="Select Date"
+                onChange={(e) => onChange(e)}
+                style={{ margin: "15px" }}
+                className="form-control datepicker"
+              />
+              <input
+                type="time"
+                name="dTime"
+                value={dTime}
+                onChange={(e) => onChange(e)}
+                style={{ margin: "15px", padding: "6px 12px 6px 12px" }}
+              />
+            </div>
             <TextField
               required
               id="name"
@@ -323,7 +352,7 @@ function CreateEvent() {
                 onChange={(e) => onChange(e)}
                 style={{ margin: "10px" }}
               >
-                <option value="default">Enter Policy</option>
+                <option value="default">Admission Policy</option>
                 <option value="FCFS">FCFS</option>
                 <option value="APPROVAL">Approval Required</option>
               </select>
