@@ -59,8 +59,14 @@ function EventPage() {
           eventId: localStorage.getItem("eventId"),
         },
       })
-      .then((response) => response.status)
-      .catch((err) => alert(err.response.data));
+      .then((response) => {
+        if (event.admissionPolicy === "APPROVAL") {
+          alert("Your request has been submitted for approval");
+        }
+        else { alert("Registered succesfully!") }
+        return response.status
+      })
+      .catch((err) => alert(JSON.stringify(err.response.data)));
   };
 
   return (
