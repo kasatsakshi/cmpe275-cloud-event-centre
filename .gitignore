@@ -9,4 +9,12 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+<<<<<<< HEAD
+/client/package-lock.json
+/server/*.classpath
+/server/.idea
+/server/.settings
+=======
 /.metadata/
+>>>>>>> f3443728ae4f7f92094fe66406469c328f2115d6
+/CEC.postman_collection.json

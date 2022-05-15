@@ -26,6 +26,7 @@ import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AccountStatus;
 import edu.sjsu.cmpe275.project.types.AccountType;
+import edu.sjsu.cmpe275.project.types.AuthProvider;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -54,7 +55,7 @@ public class UserController {
 		User user = userService.findUserById(id);
 		if (user == null) {
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		}
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
@@ -70,7 +71,7 @@ public class UserController {
 		User user = userService.findUserByEmail(email);
 		if (user == null) {
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		}
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
@@ -91,12 +92,13 @@ public class UserController {
 	 * @param zip
 	 * @return
 	 */
-	@PostMapping(params = { "fullName", "screenName", "email", "password", "accountType" })
+	@PostMapping(params = { "fullName", "screenName", "email", "password", "accountType", "provider" })
 	public ResponseEntity<?> signUp(@RequestParam String fullName, @RequestParam String screenName,
 			@RequestParam String email, @RequestParam String password, @RequestParam AccountType accountType,
-			@RequestParam Optional<String> gender, @RequestParam Optional<String> description,
-			@RequestParam Optional<String> street, @RequestParam Optional<String> city,
-			@RequestParam Optional<String> state, @RequestParam Optional<String> zip, HttpServletRequest request)
+			@RequestParam AuthProvider provider, @RequestParam Optional<String> gender,
+			@RequestParam Optional<String> description, @RequestParam Optional<String> street,
+			@RequestParam Optional<String> city, @RequestParam Optional<String> state,
+			@RequestParam Optional<String> zip, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
 		if (fullName == null || screenName == null || email == null || password == null || accountType == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -104,15 +106,15 @@ public class UserController {
 		User user = userService.findUserByEmail(email);
 		if (user != null)
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Email is already in use.\"");
+					.body("{\"message\":\"Email is already in use. Try logging in.\"}");
 		else {
 			String siteURL = request.getRequestURL().toString();
 			siteURL = siteURL.replace(request.getServletPath(), "");
-			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, description,
-					street, city, state, zip, siteURL);
+			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, provider,
+					description, street, city, state, zip, siteURL);
 			if (user == null)
 				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"Something went wrong\"");
+						.body("{\"message\":\"Something went wrong\"}");
 			return new ResponseEntity<User>(user, HttpStatus.CREATED);
 		}
 
@@ -124,7 +126,7 @@ public class UserController {
 			return ResponseEntity.status(302).location(URI.create("http://localhost:3000/")).build();
 		} else {
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(
-					"\"message\":\"Sorry, we could not verify account. It maybe already verified, or verification code is incorrect.\"");
+					"{\"message\":\"Sorry, we could not verify account. It maybe already verified, or verification code is incorrect.\"}");
 		}
 	}
 
@@ -135,19 +137,42 @@ public class UserController {
 	 * @param password
 	 * @return
 	 */
-	@PostMapping(params = { "email", "password" })
-	public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password) {
+	@PostMapping(params = { "email", "password", "provider" })
+	public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password,
+			@RequestParam AuthProvider provider) {
 		if (email == null || email == "" || password == null || password == "")
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Email or Password can not be empty\"");
+					.body("{\"message\":\"Email or Password can not be empty\"}");
 
 		User user = userService.findUserByEmail(email);
 		if (user == null)
-			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(
+					"{\"message\":\"You are not registered with us. Please create an account to access our events\"}");
 		else {
 			if (user.getStatus() == AccountStatus.ACTIVE) {
-				if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+				if (provider == AuthProvider.local) {
+					if (user.getAuthProvider() == AuthProvider.google) {
+						return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON).body(
+								"{\"message\":\"You signed up using your google account. Please use the same to login.\"}");
+					}
+					if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+						HashMap<String, Object> response = new HashMap<String, Object>();
+						response.put("id", user.getId());
+						response.put("fullName", user.getFullName());
+						response.put("screenName", user.getScreenName());
+						response.put("email", user.getEmail());
+						response.put("status", user.getStatus());
+						response.put("eventsRegistered", user.getEventsRegistered());
+						return new ResponseEntity<>(response, HttpStatus.OK);
+					} else {
+						return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
+								.body("{\"message\":\"Password you entered is incorrect.\"}");
+					}
+				} else if (provider == AuthProvider.google) {
+//					if (user.getAuthProvider() == AuthProvider.local) {
+//						return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON).body(
+//								"\"message\":\"You signed up using an email and password. Please use the same to login.\"");
+//					}
 					HashMap<String, Object> response = new HashMap<String, Object>();
 					response.put("id", user.getId());
 					response.put("fullName", user.getFullName());
@@ -156,14 +181,14 @@ public class UserController {
 					response.put("status", user.getStatus());
 					response.put("eventsRegistered", user.getEventsRegistered());
 					return new ResponseEntity<>(response, HttpStatus.OK);
-				} else
-					return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
-							.body("\"message\":\"Password is incorrect.\"");
-			} else
+				}
+			} else {
 				return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"Please verify your email.\"");
+						.body("{\"message\":\"Please verify your email to access our events.\"}");
+			}
 		}
-
+		return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
+				.body("{\"message\":\"Something went wrong.\"}");
 	}
 
 	/**
@@ -189,14 +214,14 @@ public class UserController {
 		User user = userService.findUserById(id);
 		if (user == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		else
 			user = userService.updateUser(user, fullName, screenName, gender, description, street, city, state, zip);
 		if (user != null)
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		else
 			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Something went wrong\"");
+					.body("{\"message\":\"Something went wrong\"}");
 	}
 
 	/**
@@ -210,17 +235,17 @@ public class UserController {
 		User user = userService.findUserById(id);
 		if (user == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		else if (user.getStatus() == AccountStatus.ACTIVE)
 			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User is already active\"");
+					.body("{\"message\":\"User is already active\"}");
 		else {
 			user = userService.activateAccount(user, AccountStatus.ACTIVE);
 			if (user != null)
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
 		return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-				.body("\"message\":\"Something went wrong\"");
+				.body("{\"message\":\"Something went wrong\"}");
 	}
 
 	/**
@@ -234,11 +259,11 @@ public class UserController {
 		User user = userService.findUserById(id);
 		if (user == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		List<EventRequest> myRequests = userService.myRequests(user);
 		if (myRequests == null)
 			return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"You have not requested signup for any event.\"");
+					.body("{\"message\":\"You have not requested signup for any event.\"}");
 		return new ResponseEntity<List<EventRequest>>(myRequests, HttpStatus.OK);
 	}
 
@@ -253,11 +278,11 @@ public class UserController {
 		User user = userService.findUserById(id);
 		if (user == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 		List<EventRequest> requestsRecieved = userService.requestsRecieved(user);
 		if (requestsRecieved == null)
 			return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"You have not recieved signup request for any event.\"");
+					.body("{\"message\":\"You have not recieved signup request for any event.\"}");
 		return new ResponseEntity<List<EventRequest>>(requestsRecieved, HttpStatus.OK);
 	}
 }

@@ -53,14 +53,15 @@ public class UserService {
 	 * @return
 	 */
 	public User registerUser(String fullName, String screenName, String email, String password, Optional<String> gender,
-			AccountType accountType, Optional<String> description, Optional<String> street, Optional<String> city,
-			Optional<String> state, Optional<String> zip, String siteURL)
+			AccountType accountType, AuthProvider provider, Optional<String> description, Optional<String> street,
+			Optional<String> city, Optional<String> state, Optional<String> zip, String siteURL)
 			throws UnsupportedEncodingException, MessagingException {
 		User user = new User();
 		setValues(user, fullName, screenName, email, password, gender, accountType, description, street, city, state,
 				zip);
 		String randomCode = RandomString.make(64);
 		user.setVerificationCode(randomCode);
+		user.setAuthProvider(provider);
 		User response = userDao.save(user);
 		sendVerificationEmail(user, siteURL);
 		return response;

@@ -1,27 +1,57 @@
-import { signupStart, signupSuccess, signupFailure, loginStart, loginFailure, loginSuccess, logoutUser } from "./userRedux";
-import axios from 'axios';
+import {
+  signupStart,
+  signupSuccess,
+  signupFailure,
+  loginStart,
+  loginFailure,
+  loginSuccess,
+  logoutUser,
+  clearErrorMessage,
+} from "./userRedux";
+import axios from "axios";
 
-export const signup = async (dispatch, user) => {
+export const signup = (dispatch, user) => {
   dispatch(signupStart());
-  try {
-    const res = await axios.post(`/api/user`, null, {
-      params: user
+  dispatch(clearErrorMessage());
+  axios
+    .post(`/api/user`, null, { params: user })
+    .then((res) => {
+      if (res.status === 201) {
+        dispatch(signupSuccess(res.data));
+      }
+    })
+    .catch((err) => {
+      dispatch(clearErrorMessage());
+      console.log(err.response.data.message);
+      if (err.response.data.message) {
+        const errMsg = err.response.data.message;
+        dispatch(signupFailure(errMsg));
+      } else {
+        dispatch(signupFailure("Internal Server error"));
+      }
     });
-    dispatch(signupSuccess(res.data));
-  } catch (err) {
-    dispatch(signupFailure());
-  }
 };
 
-export const login = async (dispatch, user) => {
+export const login = (dispatch, user) => {
   dispatch(loginStart());
-  try {
-    const res = await axios.post(`/api/user`, null, { params: user });
-    console.log(JSON.stringify(res));
-    dispatch(loginSuccess(res.data));
-  } catch (err) {
-    dispatch(loginFailure());
-  }
+  dispatch(clearErrorMessage());
+  axios
+    .post(`/api/user`, null, { params: user })
+    .then((res) => {
+      if (res.status === 200) {
+        dispatch(loginSuccess(res.data));
+      }
+    })
+    .catch((err) => {
+      dispatch(clearErrorMessage());
+      console.log(err.response.data.message);
+      if (err.response.data.message) {
+        const errMsg = err.response.data.message;
+        dispatch(loginFailure(errMsg));
+      } else {
+        dispatch(loginFailure("Internal Server error"));
+      }
+    });
 };
 
 export const logout = (dispatch) => {

@@ -1,35 +1,64 @@
-import React, { useState } from 'react';
-import FormLabel from '@mui/material/FormLabel';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import React, { useEffect, useState } from "react";
+import FormLabel from "@mui/material/FormLabel";
+import TextField from "@mui/material/TextField";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import styled from "styled-components";
-import axios from 'axios';
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import './Register.css';
-import { signup } from '../redux/user';
+import "./Register.css";
+import { signup } from "../redux/user";
 
 const Error = styled.span`
   color: red;
 `;
 
 function Register() {
-
-  const [fullName, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [screenName, setScreenName] = useState('');
-  const [gender, setGender] = useState('');
-  const [accountType, setAccountType] = useState('');
-  const [description, setDescription] = useState('');
-  const [street, setStreet] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
-
+  const [fullName, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [screenName, setScreenName] = useState("");
+  const [gender, setGender] = useState("");
+  const [accountType, setAccountType] = useState("");
+  const [description, setDescription] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [provider, setProvider] = useState("");
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMessage] = useState("");
+  const location = useLocation();
   const dispatch = useDispatch();
-  const { isFetching, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const { isFetching, error, errorMessage } = useSelector(
+    (state) => state.user
+  );
+
+  const userProfile = location.state;
+
+  useEffect(() => {
+    setShowError(error);
+    setErrorMessage(errorMessage);
+    if (userProfile) {
+      setEmail(userProfile.email);
+      setName(userProfile.name);
+      setPassword(userProfile.sub);
+      setProvider("google");
+    } else {
+      setEmail("");
+      setName("");
+      setPassword("");
+      setScreenName("");
+      setDescription("");
+      setStreet("");
+      setCity("");
+      setState("");
+      setZip("");
+      setProvider("local");
+    }
+  }, [error, errorMessage]);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -44,136 +73,185 @@ function Register() {
       street,
       city,
       state,
-      zip
-    })
-  }
-
-  // const handleClick = (e) => {
-  //   e.preventDefault();
-  // axios.post(`/api/user`, null, {
-  //   params: {
-  //     fullName,
-  //     email,
-  //     password,
-  //     screenName,
-  //     gender,
-  //     accountType,
-  //     description,
-  //     street,
-  //     city,
-  //     state,
-  //     zip
-  //   }
-  // })
-  //     .then(response => response.status)
-  //     .catch(err => console.warn(err));
-  // };
-
+      zip,
+      provider,
+    });
+    if (!error) {
+      navigate(`/verifyAccount`);
+    }
+  };
   return (
-
-    <div className='register-container'>
-      <form action="#">
-        <h1>Register Details</h1>
-        <div className='register-radio'>
-          {/* <FormLabel className='register-label' id="account-type">Account Type</FormLabel> */}
+    <div
+      className="register-container"
+      style={{
+        margin: "auto",
+        marginTop: "25px",
+        marginBottom: "25px",
+        padding: "10px",
+      }}
+    >
+      <form onSubmit={handleClick}>
+        <h1>Create account</h1>
+        <div className="register-radio">
           <RadioGroup
             row
             aria-labelledby="account-type"
             name="account-type-buttons"
           >
-            <FormControlLabel onClick={(e) => setAccountType('PERSON')} value="person" control={<Radio />} label="Person" />
-            <FormControlLabel onClick={(e) => setAccountType('ORGANISATION')} value="organization" control={<Radio />} label="Organization" />
+            <FormControlLabel
+              onClick={(e) => setAccountType("PERSON")}
+              value="person"
+              control={<Radio />}
+              label="Person"
+            />
+            <FormControlLabel
+              onClick={(e) => setAccountType("ORGANISATION")}
+              value="organization"
+              control={<Radio />}
+              label="Organization"
+            />
           </RadioGroup>
         </div>
         <TextField
           required
+          label="Full Name"
           id="name"
-          placeholder='Enter your full name'
-          className='register-input-fields'
+          placeholder="Enter your full name"
+          className="register-input-fields"
+          value={fullName}
           style={{ paddingBottom: 20 }}
           onChange={(e) => setName(e.target.value)}
         />
         <TextField
           required
+          label="Email"
           id="email"
-          placeholder='email'
-          className='register-input-fields'
+          placeholder="email"
+          className="register-input-fields"
+          value={email}
           style={{ paddingBottom: 20 }}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setErrorMessage("");
+            setShowError(false);
+          }}
         />
+        {provider == "local" ? (
+          <TextField
+            required
+            label="Password"
+            id="password"
+            placeholder="password"
+            type="password"
+            value={password}
+            className="register-input-fields"
+            style={{ paddingBottom: 20 }}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        ) : (
+          <div></div>
+        )}
+
+        {accountType != "ORGANISATION" ? (
+          <div className="register-radio">
+            <FormLabel>Gender</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+            >
+              <FormControlLabel
+                onClick={(e) => setGender("female")}
+                value="female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel
+                onClick={(e) => setGender("male")}
+                value="male"
+                control={<Radio />}
+                label="Male"
+              />
+              <FormControlLabel
+                onClick={(e) => setGender("other")}
+                value="other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+          </div>
+        ) : (
+          <div></div>
+        )}
         <TextField
           required
-          id="password"
-          placeholder='password'
-          type='password'
-          className='register-input-fields'
-          style={{ paddingBottom: 20 }}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <div className='register-radio'>
-          <FormLabel>Gender</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="demo-row-radio-buttons-group-label"
-            name="row-radio-buttons-group"
-          >
-            <FormControlLabel onClick={(e) => setGender('female')} value="female" control={<Radio />} label="Female" />
-            <FormControlLabel onClick={(e) => setGender('male')} value="male" control={<Radio />} label="Male" />
-            <FormControlLabel onClick={(e) => setGender('other')} value="other" control={<Radio />} label="Other" />
-          </RadioGroup>
-        </div>
-        <TextField
-          required
+          label="Screen Name"
           id="ScreenName"
-          placeholder='Screen Name'
-          className='register-input-fields'
+          placeholder="Screen Name"
+          className="register-input-fields"
+          value={screenName}
           style={{ paddingBottom: 20 }}
           onChange={(e) => setScreenName(e.target.value)}
         />
         <TextField
-          required
+          label="Description"
           id="description"
-          placeholder='Description'
-          className='register-input-fields'
+          placeholder="Description"
+          value={description}
+          className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setDescription(e.target.value)}
         />
         <TextField
           required
+          label="Street"
           id="street"
-          placeholder='Street'
-          className='register-input-fields'
+          placeholder="Street"
+          value={street}
+          className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setStreet(e.target.value)}
         />
         <TextField
           required
+          label="City"
           id="city"
-          placeholder='City'
-          className='register-input-fields'
+          placeholder="City"
+          value={city}
+          className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setCity(e.target.value)}
         />
         <TextField
           required
+          label="State"
           id="state"
-          placeholder='State'
-          className='register-input-fields'
+          placeholder="State"
+          value={state}
+          className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setState(e.target.value)}
         />
         <TextField
           required
+          label="Zip Code"
           id="zip"
-          placeholder='Zip'
-          className='register-input-fields'
+          placeholder="Zip"
+          value={zip}
+          className="register-input-fields"
           onChange={(e) => setZip(e.target.value)}
         />
-        <button onClick={handleClick} className='register-button'>Register</button>
-        {error && <Error>Something went wrong! Try again</Error>}
+        <button type="submit" className="register-button">
+          Register
+        </button>
+        {showError ? (
+          <Error style={{ fontSize: "1em", margin: "5px" }}>{errorMsg}</Error>
+        ) : (
+          <div></div>
+        )}
       </form>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
