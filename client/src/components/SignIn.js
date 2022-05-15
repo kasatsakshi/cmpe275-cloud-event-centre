@@ -25,7 +25,6 @@ function SignIn() {
   );
 
   useEffect(() => {
-    setShowError(error);
     setErrorMessage(errorMessage);
   }, [error, errorMessage]);
 
@@ -42,9 +41,6 @@ function SignIn() {
       password: userProfile.sub,
       provider: "google",
     });
-    if (showError) {
-      alert(errorMsg);
-    }
   };
 
   const handleGoogleSignUp = (googleData) => {
@@ -77,6 +73,11 @@ function SignIn() {
     e.preventDefault();
     dispatch(clearErrorMessage());
     login(dispatch, { email, password, provider: "local" });
+    setTimeout(() => {
+      if (!currentUser) {
+        setShowError(true);
+      }
+    }, 1000);
   };
 
   const loginComponent = (

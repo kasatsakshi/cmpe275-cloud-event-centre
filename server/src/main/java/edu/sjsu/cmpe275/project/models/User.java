@@ -8,6 +8,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe275.project.types.AccountStatus;
@@ -80,8 +81,7 @@ public class User {
 
 	@ManyToMany
 	@JoinTable(name = "event_participation", joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
-	@JsonIgnoreProperties({ "creator", "participants", "minimumParticipants", "maximumParticipants",
-			"admissionPolicy" })
+	@JsonIncludeProperties({ "id", "title", "startTime", "endTime", "status" })
 	private List<Event> eventsRegistered;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
@@ -93,11 +93,11 @@ public class User {
 	@Fetch(value = FetchMode.SUBSELECT)
 	@JsonIgnore
 	private Set<EventRequest> requestsRecieved;
-	
-	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Answer> answers;
-	
-	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Question> questions;
 
 	/**

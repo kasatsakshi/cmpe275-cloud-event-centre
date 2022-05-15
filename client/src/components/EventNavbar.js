@@ -21,7 +21,7 @@ function EventNavbar() {
         </li>
         <li className="nav-item">
           <Link
-            to="/eventdash"
+            to="/event-dashboard"
             className="nav-link"
             style={{ height: "100%", margin: "10px" }}
           >
@@ -30,7 +30,7 @@ function EventNavbar() {
         </li>
         <li className="nav-item">
           <Link
-            to="/createevent"
+            to="/create-event"
             className="nav-link"
             style={{ height: "100%", margin: "10px" }}
           >

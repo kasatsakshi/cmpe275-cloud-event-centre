@@ -12,20 +12,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.request.LoginRequest;
+import edu.sjsu.cmpe275.project.request.SignUpRequest;
 import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AccountStatus;
-import edu.sjsu.cmpe275.project.types.AccountType;
 import edu.sjsu.cmpe275.project.types.AuthProvider;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,26 +95,27 @@ public class UserController {
 	 * @param zip
 	 * @return
 	 */
-	@PostMapping(params = { "fullName", "screenName", "email", "password", "accountType", "provider" })
-	public ResponseEntity<?> signUp(@RequestParam String fullName, @RequestParam String screenName,
-			@RequestParam String email, @RequestParam String password, @RequestParam AccountType accountType,
-			@RequestParam AuthProvider provider, @RequestParam Optional<String> gender,
-			@RequestParam Optional<String> description, @RequestParam Optional<String> street,
-			@RequestParam Optional<String> city, @RequestParam Optional<String> state,
-			@RequestParam Optional<String> zip, HttpServletRequest request)
+//	@PostMapping(params = { "fullName", "screenName", "email", "password", "accountType", "provider" })
+	@PostMapping(path = "/register")
+	public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
-		if (fullName == null || screenName == null || email == null || password == null || accountType == null)
+		if (signUpRequest.getFullName() == null || signUpRequest.getScreenName() == null
+				|| signUpRequest.getEmail() == null || signUpRequest.getPassword() == null
+				|| signUpRequest.getAccountType() == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-		User user = userService.findUserByEmail(email);
+		User user = userService.findUserByEmail(signUpRequest.getEmail());
 		if (user != null)
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
 					.body("{\"message\":\"Email is already in use. Try logging in.\"}");
 		else {
 			String siteURL = request.getRequestURL().toString();
 			siteURL = siteURL.replace(request.getServletPath(), "");
-			user = userService.registerUser(fullName, screenName, email, password, gender, accountType, provider,
-					description, street, city, state, zip, siteURL);
+			user = userService.registerUser(signUpRequest.getFullName(), signUpRequest.getScreenName(),
+					signUpRequest.getEmail(), signUpRequest.getPassword(), signUpRequest.getGender(),
+					signUpRequest.getAccountType(), signUpRequest.getProvider(), signUpRequest.getDescription(),
+					signUpRequest.getStreet(), signUpRequest.getCity(), signUpRequest.getState(),
+					signUpRequest.getZip(), siteURL);
 			if (user == null)
 				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
 						.body("{\"message\":\"Something went wrong\"}");
@@ -126,7 +130,7 @@ public class UserController {
 			return ResponseEntity.status(302).location(URI.create("http://localhost:3000/")).build();
 		} else {
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(
-					"{\"message\":\"Sorry, we could not verify account. It maybe already verified, or verification code is incorrect.\"}");
+					"{\"message\":\"Sorry, we could not verify your account. It may already be verified, or verification code is incorrect.\"}");
 		}
 	}
 
@@ -137,9 +141,13 @@ public class UserController {
 	 * @param password
 	 * @return
 	 */
-	@PostMapping(params = { "email", "password", "provider" })
-	public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password,
-			@RequestParam AuthProvider provider) {
+//	@PostMapping(params = { "email", "password", "provider" })
+	@PostMapping(path = "/signin")
+	public ResponseEntity<?> signIn(@Validated @RequestBody LoginRequest loginRequest) {
+		String email = loginRequest.getEmail();
+		String password = loginRequest.getPassword();
+		AuthProvider provider = loginRequest.getProvider();
+
 		if (email == null || email == "" || password == null || password == "")
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
 					.body("{\"message\":\"Email or Password can not be empty\"}");
@@ -162,7 +170,6 @@ public class UserController {
 						response.put("screenName", user.getScreenName());
 						response.put("email", user.getEmail());
 						response.put("status", user.getStatus());
-						response.put("eventsRegistered", user.getEventsRegistered());
 						return new ResponseEntity<>(response, HttpStatus.OK);
 					} else {
 						return ResponseEntity.status(401).contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +186,6 @@ public class UserController {
 					response.put("screenName", user.getScreenName());
 					response.put("email", user.getEmail());
 					response.put("status", user.getStatus());
-					response.put("eventsRegistered", user.getEventsRegistered());
 					return new ResponseEntity<>(response, HttpStatus.OK);
 				}
 			} else {

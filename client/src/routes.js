@@ -10,7 +10,7 @@ class Routes extends Component {
       <div>
         <Route exact path="/" component={SignIn} />
         <Route exact path="/register" component={Register} />
-        <Route exact path="/eventdash" component={EventDashboard} />
+        <Route exact path="/event-dashboard" component={EventDashboard} />
       </div>
     );
   }

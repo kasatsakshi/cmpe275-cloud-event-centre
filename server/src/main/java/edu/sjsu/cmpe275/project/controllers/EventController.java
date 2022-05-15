@@ -10,10 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.request.CreateEventRequest;
 import edu.sjsu.cmpe275.project.services.EventService;
 import edu.sjsu.cmpe275.project.services.RequestService;
 import edu.sjsu.cmpe275.project.services.UserService;
@@ -51,7 +54,7 @@ public class EventController {
 		Event event = eventService.findEventById(id);
 		if (event == null) {
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Event not found\"");
+					.body("{\"message\":\"Event not found\"}");
 		}
 		return new ResponseEntity<Event>(event, HttpStatus.OK);
 	}
@@ -70,7 +73,7 @@ public class EventController {
 		List<Event> events = eventService.getAllEvents(city, status, startTime, endTime);
 		if (events == null) {
 			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Something went wrong\"");
+					.body("{\"message\":\"Something went wrong\"}");
 		}
 		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
@@ -94,29 +97,26 @@ public class EventController {
 	 * @param zip
 	 * @return
 	 */
-	@PostMapping(params = { "title", "startTime", "endTime", "deadline", "minimumParticipants", "maximumParticipants",
-			"fee", "admissionPolicy", "creatorId" })
-	public ResponseEntity<?> createEvent(@RequestParam String title,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime startTime,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime endTime,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime deadline,
-			@RequestParam Integer minimumParticipants, @RequestParam Integer maximumParticipants,
-			@RequestParam Integer fee, @RequestParam AdmissionPolicy admissionPolicy, @RequestParam Long creatorId,
-			@RequestParam Optional<String> description, @RequestParam Optional<String> street,
-			@RequestParam Optional<String> city, @RequestParam Optional<String> state,
-			@RequestParam Optional<String> zip) {
-		if (title == null || startTime == null || endTime == null || deadline == null || minimumParticipants == null
-				|| maximumParticipants == null || fee == null || admissionPolicy == null || creatorId == null)
+	@PostMapping(path = "/create")
+	public ResponseEntity<?> createEvent(@Validated @RequestBody CreateEventRequest createEventRequest) {
+		if (createEventRequest.getTitle() == null || createEventRequest.getStartTime() == null
+				|| createEventRequest.getEndTime() == null || createEventRequest.getDeadline() == null
+				|| createEventRequest.getMinimumParticipants() == null
+				|| createEventRequest.getMaximumParticipants() == null || createEventRequest.getFee() == null
+				|| createEventRequest.getAdmissionPolicy() == null || createEventRequest.getCreatorId() == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-		Event event = eventService.createEvent(title, startTime, endTime, deadline, minimumParticipants,
-				maximumParticipants, fee, admissionPolicy, creatorId, description, street, city, state, zip,
-				EventStatus.REGISTRATION_OPEN);
+		Event event = eventService.createEvent(createEventRequest.getTitle(), createEventRequest.getStartTime(),
+				createEventRequest.getEndTime(), createEventRequest.getDeadline(),
+				createEventRequest.getMinimumParticipants(), createEventRequest.getMaximumParticipants(),
+				createEventRequest.getFee(), createEventRequest.getAdmissionPolicy(), createEventRequest.getCreatorId(),
+				createEventRequest.getDescription(), createEventRequest.getStreet(), createEventRequest.getCity(),
+				createEventRequest.getState(), createEventRequest.getZip(), EventStatus.REGISTRATION_OPEN);
 		if (event != null)
 			return new ResponseEntity<Event>(event, HttpStatus.CREATED);
 		else
 			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Something went wrong\"");
+					.body("{\"message\":\"Something went wrong\"}");
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class EventController {
 		Event event = eventService.findEventById(id);
 		if (event == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Event not found\"");
+					.body("{\"message\":\"Event not found\"}");
 		else {
 			event = eventService.updateEvent(event, title, startTime, endTime, deadline, minimumParticipants,
 					maximumParticipants, fee, admissionPolicy, description, street, city, state, zip);
@@ -160,7 +160,7 @@ public class EventController {
 				return new ResponseEntity<Event>(event, HttpStatus.OK);
 			else
 				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"Something went wrong\"");
+						.body("{\"message\":\"Something went wrong\"}");
 		}
 	}
 
@@ -175,12 +175,12 @@ public class EventController {
 		Event event = eventService.findEventById(id);
 		if (event == null) {
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Event not found\"");
+					.body("{\"message\":\"Event not found\"}");
 		} else {
 			event = eventService.cancelEvent(event);
 			if (event == null)
 				return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"Can not cancel this event\"");
+						.body("{\"message\":\"Can not cancel this event\"}");
 			else
 				return new ResponseEntity<Event>(event, HttpStatus.OK);
 		}
@@ -198,44 +198,44 @@ public class EventController {
 		User user = userService.findUserById(userId);
 		if (user == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"User not found\"");
+					.body("{\"message\":\"User not found\"}");
 
 		Event event = eventService.findEventById(eventId);
 
 		if (event == null)
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Event not found\"");
+					.body("{\"message\":\"Event not found\"}");
 
 		if (event.getStatus() == EventStatus.CANCELLED)
 			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Event has been cancelled\"");
+					.body("{\"message\":\"Event has been cancelled\"}");
 
 		if (event.getParticipants().contains(user))
 			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"You have already signed up for this event.\"");
+					.body("{\"message\":\"You have already signed up for this event.\"}");
 
 		if (event.getParticipants().size() >= event.getMaximumParticipants())
 			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Maximum participants reached.\"");
+					.body("{\"message\":\"Maximum participants reached.\"}");
 
 		LocalDateTime now = LocalDateTime.now();
 		if (now.isAfter(event.getDeadline()))
 			return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-					.body("\"message\":\"Registration Closed for this event.\"");
+					.body("{\"message\":\"Registration Closed for this event.\"}");
 
 		if (event.getAdmissionPolicy() == AdmissionPolicy.FCFS) {
 			event = eventService.addParticipant(user, event);
 
 			if (event == null)
 				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"Something went wrong\"");
+						.body("{\"message\":\"Something went wrong\"}");
 
 			return new ResponseEntity<Event>(event, HttpStatus.OK);
 		} else {
 			EventRequest signUpRequest = requestService.sendRequest(user, event);
 			if (signUpRequest == null) {
 				return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
-						.body("\"message\":\"You have already requested signup for this event.\"");
+						.body("{\"message\":\"You have already requested signup for this event.\"}");
 			}
 			return new ResponseEntity<EventRequest>(signUpRequest, HttpStatus.OK);
 		}

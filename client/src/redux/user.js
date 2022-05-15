@@ -14,7 +14,7 @@ export const signup = (dispatch, user) => {
   dispatch(signupStart());
   dispatch(clearErrorMessage());
   axios
-    .post(`/api/user`, null, { params: user })
+    .post(`/api/user/register`, user)
     .then((res) => {
       if (res.status === 201) {
         dispatch(signupSuccess(res.data));
@@ -36,7 +36,7 @@ export const login = (dispatch, user) => {
   dispatch(loginStart());
   dispatch(clearErrorMessage());
   axios
-    .post(`/api/user`, null, { params: user })
+    .post(`/api/user/signin`, user)
     .then((res) => {
       if (res.status === 200) {
         dispatch(loginSuccess(res.data));
