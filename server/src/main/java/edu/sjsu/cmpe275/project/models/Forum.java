@@ -92,6 +92,10 @@ public class Forum {
 		this.questions = questions;
 	}
 
+	public void addQuestion(Question question) {
+		this.questions.add(question);
+	}
+
 	@Override
 	public String toString() {
 		return "Forum [id=" + id + ", type=" + type + ", status=" + status + ", event=" + event + ", questions="
