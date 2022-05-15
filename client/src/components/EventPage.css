@@ -1,0 +1,50 @@
+.event-container{
+  margin: 50px 20px;
+}
+
+.event-title{
+  margin-bottom: 0;
+  font-size: 60px;
+}
+
+.event-description {
+  font-size: 30px;
+  font-weight: 150;
+  margin-bottom: 20px;
+}
+
+.event-text {
+  font-size: 20px;
+}
+
+.event-owner {
+  margin-bottom: 20px;
+}
+
+.event-date {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5px;
+}
+
+.event-fee {
+  margin-bottom: 5px;
+}
+
+.event-start {
+  margin-right: 50px;
+}
+
+.event-participants {
+  margin-bottom: 30px;
+}
+
+.event-page-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.event-sidebar {
+  width:200px;
+}
