@@ -26,28 +26,30 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={user ? <Navigate to="eventdash" /> : <SignIn />}
+            element={user ? <Navigate to="/event-dashboard" /> : <SignIn />}
           />
           <Route
             path="/register"
             element={user ? <EventDashboard /> : <Register />}
           />
           <Route
-            path="/createevent"
+            path="/create-event"
             element={user ? <CreateEvent /> : <Navigate to="/" />}
           />
           <Route
-            path="/eventdash"
+            path="/event-dashboard"
             element={user ? <EventDashboard /> : <Navigate to="/" />}
           />
           <Route path="/temp" element={<Temp />} />
           <Route
-            path="/eventpage"
+            path="/event-page"
             element={user ? <EventPage /> : <Navigate to="/" />}
           />
           <Route
-            path="/verifyAccount"
-            element={user ? <Navigate to="/eventdash" /> : <VerifyAccount />}
+            path="/verify-account"
+            element={
+              user ? <Navigate to="/event-dashboard" /> : <VerifyAccount />
+            }
           />
         </Routes>
       </Router>

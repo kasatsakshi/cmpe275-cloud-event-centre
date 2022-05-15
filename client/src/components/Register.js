@@ -39,7 +39,6 @@ function Register() {
   const userProfile = location.state;
 
   useEffect(() => {
-    setShowError(error);
     setErrorMessage(errorMessage);
     if (userProfile) {
       setEmail(userProfile.email);
@@ -76,9 +75,13 @@ function Register() {
       zip,
       provider,
     });
-    if (!error) {
-      navigate(`/verifyAccount`);
-    }
+    setTimeout(() => {
+      if (error) {
+        setShowError(true);
+      } else {
+        navigate(`/verify-account`);
+      }
+    }, 2000);
   };
   return (
     <div
@@ -241,14 +244,14 @@ function Register() {
           className="register-input-fields"
           onChange={(e) => setZip(e.target.value)}
         />
-        <button type="submit" className="register-button">
-          Register
-        </button>
         {showError ? (
           <Error style={{ fontSize: "1em", margin: "5px" }}>{errorMsg}</Error>
         ) : (
           <div></div>
         )}
+        <button type="submit" className="register-button">
+          Register
+        </button>
       </form>
     </div>
   );

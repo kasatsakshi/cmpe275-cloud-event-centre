@@ -225,7 +225,7 @@ function EventDashboard() {
                     <p href="#" class="card-link">
                       {room.description}
                     </p>
-                    <Link to="/eventpage">
+                    <Link to="/event-page">
                       <button
                         class="btn btn-primary"
                         onClick={() => localStorage.setItem("eventId", room.id)}
