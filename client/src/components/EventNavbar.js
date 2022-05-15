@@ -11,6 +11,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import axios from "axios";
 import moment from "moment";
+import { AccountCircle } from '@mui/icons-material';
 
 function EventNavbar() {
   const dispatch = useDispatch();
@@ -79,6 +80,10 @@ function EventNavbar() {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+        </li>
+        <li>
+          <Link to="/account" className="nav-link"
+            style={{ height: "100%" }}><AccountCircle sx={{ width: 56, height: 40 }} className="nav-accountCircle" /></Link>
         </li>
       </ul>
     </nav>

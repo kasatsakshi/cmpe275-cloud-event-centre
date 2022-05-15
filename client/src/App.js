@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import SignIn from "./components/SignIn";
 import VerifyAccount from "./components/VerifyAccount";
 import SignUpForum from "./components/SignUpForum";
+import Account from "./components/Account";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -55,7 +56,13 @@ function App() {
           <Route
             path="/signup-forum"
             element={
-              user ? <SignUpForum /> : <VerifyAccount />
+              user ? <SignUpForum /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              user ? <Account /> : <Navigate to="/" />
             }
           />
         </Routes>

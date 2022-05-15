@@ -44,3 +44,9 @@
     margin-left: 600px;
     color: white;
   }
+
+  .nav-accountCircle{
+    color: grey;
+    size: large;
+    margin-left: 30px;
+}
