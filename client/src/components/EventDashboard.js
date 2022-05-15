@@ -241,7 +241,10 @@ function EventDashboard() {
           </div>
         </div>
 
-        <div className="row justify-content-center">
+        <div
+          className="row"
+          style={{ padding: "20px", justifyContent: "space-evenly" }}
+        >
           {eventsdup.map((room) => {
             return (
               <div class="row" style={{ padding: "20px" }}>
@@ -249,34 +252,35 @@ function EventDashboard() {
                   <div class="card-body">
                     <h5 class="card-title">{room.title}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                      Starts On:{" "}
+                      <em>Starts On:</em>{" "}
                       {moment(room.startTime).format("MM-DD-YYYY HH:mm")}
                     </h6>
                     <h6 class="card-subtitle mb-2 text-muted">
-                      Ends On: {moment(room.endTime).format("MM-DD-YYYY HH:mm")}
+                      <em>Ends On:</em>{" "}
+                      {moment(room.endTime).format("MM-DD-YYYY HH:mm")}
                     </h6>
                     <p href="#" class="card-link">
                       {room.address.city}
                     </p>
                     {room.status === "CANCELLED" ? (
                       <p href="#" class="card-link" style={{ color: "red" }}>
-                        Cancelled
+                        <b>Cancelled</b>
                       </p>
                     ) : room.status === "REGISTRATION_OPEN" ? (
                       <p href="#" class="card-link" style={{ color: "green" }}>
-                        Registration Open
+                        <b>Registration Open</b>
                       </p>
                     ) : room.status === "REGISTRATION_CLOSED" ? (
                       <p href="#" class="card-link" style={{ color: "orange" }}>
-                        Registration Closed
+                        <b>Registration Closed</b>
                       </p>
                     ) : room.status === "ACTIVE" ? (
                       <p href="#" class="card-link">
-                        Event Started
+                        <b>Event Started</b>
                       </p>
                     ) : room.status === "FINISHED" ? (
                       <p href="#" class="card-link" style={{ color: "red" }}>
-                        Finished
+                        <b>Finished</b>
                       </p>
                     ) : (
                       <p></p>
