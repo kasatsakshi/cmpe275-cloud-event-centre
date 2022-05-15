@@ -16,6 +16,7 @@ import Temp from "./components/Temp";
 import { useSelector } from "react-redux";
 import SignIn from "./components/SignIn";
 import VerifyAccount from "./components/VerifyAccount";
+import SignUpForum from "./components/SignUpForum";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -49,6 +50,12 @@ function App() {
             path="/verify-account"
             element={
               user ? <Navigate to="/event-dashboard" /> : <VerifyAccount />
+            }
+          />
+          <Route
+            path="/signup-forum"
+            element={
+              user ? <SignUpForum /> : <VerifyAccount />
             }
           />
         </Routes>

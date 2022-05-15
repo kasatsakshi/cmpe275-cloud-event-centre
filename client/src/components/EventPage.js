@@ -3,13 +3,11 @@ import React, { useState, useEffect } from "react";
 import Register from "./Register";
 import axios from "axios";
 import "./EventPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { Navigation } from "react-minimal-side-navigation";
-import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
-import Sidebar from "./Sidebar";
+
 
 const Button = styled.button`
   width: 200px;
@@ -29,6 +27,8 @@ function EventPage() {
   const user = useSelector((state) => state.user.currentUser);
   const [loading, setloading] = useState(false);
   const [event, setEvent] = useState("");
+
+  const navigate = useNavigate();
 
   function getEvent() {
     try {
@@ -100,7 +100,7 @@ function EventPage() {
             >
               Sign Up
             </Button>
-            <Button className="event-button" onClick={() => signupevents()}>
+            <Button className="event-button" onClick={() => navigate('/signup-forum')}>
               Signup Forum
             </Button>
             <Button className="event-button" onClick={() => signupevents()}>
