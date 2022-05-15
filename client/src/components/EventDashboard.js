@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Register from "./Register";
 import axios from "axios";
 import "./temp.css";
+import moment from "moment";
 import { Link } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 
@@ -50,18 +51,23 @@ function EventDashboard() {
   useEffect(() => {
     try {
       setloading(true);
-      axios.get("/api/event/all").then((response) => {
-        seteventsdup(response.data);
-        setduplicateevents(response.data);
-        console.log(response.data);
-        setEvents(
-          response.data.filter(
-            (li, idx, self) =>
-              self.map((itm) => itm.address.city).indexOf(li.address.city) ===
-              idx
-          )
-        );
-      });
+      axios
+        .get("/api/event/all")
+        .then((response) => {
+          seteventsdup(response.data);
+          setduplicateevents(response.data);
+          console.log(response.data);
+          setEvents(
+            response.data.filter(
+              (li, idx, self) =>
+                self.map((itm) => itm.address.city).indexOf(li.address.city) ===
+                idx
+            )
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       //const rooms = axios.get("/api/event/all");
 
       console.log(eventsdup);
@@ -95,14 +101,13 @@ function EventDashboard() {
     const dupdate = duplicateevents.filter((room) =>
       room.title.toLowerCase().includes(searchkey)
     );
-   // seteventsdup(dupdate);
-    if(city !== "" && city !== 'all'){
-    const dupdate2 = dupdate.filter((room) =>
-    room.address.city.toLowerCase().includes(city.toLowerCase())
+    // seteventsdup(dupdate);
+    if (city !== "" && city !== "all") {
+      const dupdate2 = dupdate.filter((room) =>
+        room.address.city.toLowerCase().includes(city.toLowerCase())
       );
       seteventsdup(dupdate2);
-    }
-    else{
+    } else {
       seteventsdup(dupdate);
     }
   }
@@ -174,7 +179,6 @@ function EventDashboard() {
                 {events.map((data, idx) => (
                   <option key={idx}>{data.address.city}</option>
                 ))}
-                
               </select>
             </div>
 
@@ -245,15 +249,38 @@ function EventDashboard() {
                   <div class="card-body">
                     <h5 class="card-title">{room.title}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                      {room.startTime} to {room.endTime}
+                      Starts On:{" "}
+                      {moment(room.startTime).format("MM-DD-YYYY HH:mm")}
                     </h6>
-
+                    <h6 class="card-subtitle mb-2 text-muted">
+                      Ends On: {moment(room.endTime).format("MM-DD-YYYY HH:mm")}
+                    </h6>
                     <p href="#" class="card-link">
                       {room.address.city}
                     </p>
-                    <p href="#" class="card-link">
-                      {room.description}
-                    </p>
+                    {room.status === "CANCELLED" ? (
+                      <p href="#" class="card-link" style={{ color: "red" }}>
+                        Cancelled
+                      </p>
+                    ) : room.status === "REGISTRATION_OPEN" ? (
+                      <p href="#" class="card-link" style={{ color: "green" }}>
+                        Registration Open
+                      </p>
+                    ) : room.status === "REGISTRATION_CLOSED" ? (
+                      <p href="#" class="card-link" style={{ color: "orange" }}>
+                        Registration Closed
+                      </p>
+                    ) : room.status === "ACTIVE" ? (
+                      <p href="#" class="card-link">
+                        Event Started
+                      </p>
+                    ) : room.status === "FINISHED" ? (
+                      <p href="#" class="card-link" style={{ color: "red" }}>
+                        Finished
+                      </p>
+                    ) : (
+                      <p></p>
+                    )}
                     <Link to="/event-page">
                       <button
                         onClick={() => localStorage.setItem("eventId", room.id)}
