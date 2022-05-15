@@ -211,8 +211,8 @@ function EventDashboard() {
         <div className="row justify-content-center">
           {hotels.map((room) => {
             return (
-              <div class="row">
-                <div class="card" style={{ width: "1002px" }}>
+              <div class="row" style={{ padding: "20px" }}>
+                <div class="card" style={{ width: "300px", margin: "20px" }}>
                   <div class="card-body">
                     <h5 class="card-title">{room.title}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -227,10 +227,9 @@ function EventDashboard() {
                     </p>
                     <Link to="/event-page">
                       <button
-                        class="btn btn-primary"
                         onClick={() => localStorage.setItem("eventId", room.id)}
                       >
-                        Click!
+                        Details
                       </button>
                     </Link>
                   </div>
