@@ -30,21 +30,7 @@ function EventPage() {
   const [loading, setloading] = useState(false);
   const [event, setEvent] = useState("");
 
-  // function getEvent() {
-  //   try {
-  //     setloading(true);
-  //     axios.get("/api/event/" + localStorage.getItem("eventId")).then((response) => {
-  //       console.log(response.data);
-  //       setEvent(response.data);
-  //     });
-  //     setloading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //     setloading(false);
-  //   }
-  // }
-
-  useEffect(() => {
+  function getEvent() {
     try {
       setloading(true);
       axios
@@ -82,9 +68,6 @@ function EventPage() {
       <EventNavbar />
       {event ? (
         <div className="event-page-container">
-          <div className="event-sidebar">
-            <Sidebar />
-          </div>
           <div className="event-container">
             <h1 className="event-title">{event.title}</h1>
             <div className="event-description">{event.description}</div>
