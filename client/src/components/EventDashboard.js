@@ -131,6 +131,9 @@ function EventDashboard() {
         <div className="cont" style={{ height: "100px" }}>
           <div className="row bs p-3 m-5">
             <div className="col-md-2">
+              <span style={{ opacity: "0.6", fontSize: "13px" }}>
+                Search Event
+              </span>
               <input
                 type="text"
                 className="form-control i2 m-2"
@@ -144,6 +147,9 @@ function EventDashboard() {
             </div>
 
             <div className="col-md-2">
+              <span style={{ opacity: "0.6", fontSize: "13px" }}>
+                Event City
+              </span>
               <select
                 className="form-control m-2"
                 value={location}
@@ -158,6 +164,9 @@ function EventDashboard() {
             </div>
 
             <div className="col-md-2">
+              <span style={{ opacity: "0.6", fontSize: "13px" }}>
+                Event Status
+              </span>
               <select
                 className="form-control m-2"
                 value={type}
@@ -175,7 +184,9 @@ function EventDashboard() {
 
             <div className="col-md-2">
               <div className="form-group">
-                <span style={{ opacity: "0.6", fontSize: "13px" }}>from</span>
+                <span style={{ opacity: "0.6", fontSize: "13px" }}>
+                  Start Date
+                </span>
                 <input
                   type="date"
                   name="from"
@@ -192,7 +203,9 @@ function EventDashboard() {
 
             <div className="col-sm-2">
               <div className="form-group">
-                <span style={{ opacity: "0.6", fontSize: "13px" }}>to</span>
+                <span style={{ opacity: "0.6", fontSize: "13px" }}>
+                  End Date
+                </span>
                 <input
                   type="date"
                   name="to"
