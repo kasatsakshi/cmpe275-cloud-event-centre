@@ -177,7 +177,7 @@ public class EventController {
 			return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON)
 					.body("{\"message\":\"Event not found\"}");
 		} else {
-			event = eventService.cancelEvent(event);
+			event = eventService.finishEvent(event);
 			if (event == null)
 				return ResponseEntity.status(403).contentType(MediaType.APPLICATION_JSON)
 						.body("{\"message\":\"Can not cancel this event\"}");
