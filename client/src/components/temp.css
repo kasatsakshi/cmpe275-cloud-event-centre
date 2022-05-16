@@ -41,7 +41,7 @@
   }
 
   .nav-date{
-    margin-left: 600px;
+    /* margin-left: 600px; */
     color: white;
   }
 
@@ -51,6 +51,6 @@
     margin-left: 30px;
 }
 
-.nav-logo {
+/* .nav-logo {
   margin-left: 120px;
-}
+} */

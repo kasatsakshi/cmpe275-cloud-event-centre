@@ -1,14 +1,8 @@
 import React from "react";
 import "./Register.css";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
-import DateTimePicker from "react-datetime-picker";
 import EventNavbar from "./EventNavbar";
 import "./temp.css";
 import { useSelector } from "react-redux";
@@ -18,9 +12,6 @@ function CreateEvent() {
   const user = useSelector((state) => state.user.currentUser);
 
   const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [deadlinee, setDeadline] = useState("");
-  const [value, setValue] = useState(new Date());
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",

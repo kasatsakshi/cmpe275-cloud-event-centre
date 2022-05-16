@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
-import Register from "./Register";
 import axios from "axios";
 import "./EventPage.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
@@ -25,26 +24,27 @@ const Button = styled.button`
 
 function EventPage() {
   const user = useSelector((state) => state.user.currentUser);
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [event, setEvent] = useState("");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   function getEvent() {
     try {
-      setloading(true);
+      setLoading(true);
       axios
         .get("/api/event/" + localStorage.getItem("eventId"))
         .then((response) => {
           console.log(response.data);
           setEvent(response.data);
         });
-      setloading(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
-      setloading(false);
+      setLoading(false);
     }
   }
 
@@ -52,7 +52,7 @@ function EventPage() {
     getEvent();
   }, []);
 
-  const signupevents = () => {
+  const signupEvents = () => {
     //e.preventDefault();
     axios
       .post(`/api/event/register`, null, {
@@ -63,14 +63,15 @@ function EventPage() {
       })
       .then((response) => {
         if (event.admissionPolicy === "APPROVAL") {
-          alert("Your request has been submitted for approval");
+          setShowSuccess(true);
+          setSuccessMessage("Your request has been submitted for approval");
         } else {
-          alert("Registered succesfully!");
+          setShowSuccess(true);
+          setSuccessMessage("Registered successfully!");
         }
         return response.status;
       })
       .catch((err) => {
-        // alert(err.response.data.message);
         setShowError(true);
         setErrorMessage(err.response.data.message);
       });
@@ -80,8 +81,15 @@ function EventPage() {
     <div>
       <EventNavbar />
       {showError ? (
-        <Alert key={"warning"} variant={"warning"}>
+        <Alert key="danger" variant="danger">
           {errorMessage}
+        </Alert>
+      ) : (
+        <div></div>
+      )}
+      {showSuccess ? (
+        <Alert key="success" variant="success">
+          {successMessage}
         </Alert>
       ) : (
         <div></div>
@@ -131,7 +139,7 @@ function EventPage() {
             <Button
               disabled={event.status !== "REGISTRATION_OPEN"}
               className="event-button"
-              onClick={() => signupevents()}
+              onClick={() => signupEvents()}
             >
               Sign Up
             </Button>
@@ -141,7 +149,11 @@ function EventPage() {
             >
               Signup Forum
             </Button>
-            <Button className="event-button" onClick={() => signupevents()}>
+            <Button
+              className="event-button"
+              onClick={() => signupEvents()}
+              disabled={event.status === "REGISTRATION_OPEN"}
+            >
               Participant Forum
             </Button>
           </div>
