@@ -21,7 +21,7 @@ function EventNavbar() {
     axios
       .get("/api/time")
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setMimicDate(moment(res.data).format("YYYY-MM-DD HH:mm:ss"));
       })
       .catch((err) => {
@@ -48,77 +48,95 @@ function EventNavbar() {
   };
 
   return (
-    <nav
+    // <nav
+    //   className="navbar navbar-expand-sm "
+    //   style={{
+    //     width: "100%",
+    //     margin: "0px",
+    //     backgroundColor: "#e75d45",
+    //     color: "white",
+    //   }}
+    // >
+    <div
       className="navbar navbar-expand-sm "
       style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
         width: "100%",
         margin: "0px",
         backgroundColor: "#e75d45",
         color: "white",
       }}
     >
-      <ul className="navbar-nav" style={{ color: "white" }}>
-        <li className="nav-item nav-logo">
-          <Link to="/" className="nav-link">
-            <img className="navbar-logo" src={eventLogo} alt="Events" />
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link
-            to="/event-dashboard"
-            className="nav-link"
-            style={{ height: "100%", margin: "10px", color: "white" }}
-          >
-            Home
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link
-            to="/create-event"
-            className="nav-link"
-            style={{ height: "100%", margin: "10px", color: "white" }}
-          >
-            Create Event
-          </Link>
-        </li>
-        <li className="nav-item">
-          {/* <Link to ="/rest_login" className="nav-link">Logout</Link> */}
-          <Link
-            to="/"
-            className="nav-link"
-            style={{ height: "100%", margin: "10px", color: "white" }}
-            onClick={() => logout(dispatch)}
-          >
-            Logout
-          </Link>
-        </li>
-        <li className="nav-item nav-date">
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="System Time"
-              value={mimicDate}
-              color="primary"
-              onChange={(newValue) => {
-                mimicTime(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </li>
-        <li>
-          <Link
-            to="/account"
-            className="nav-link"
-            style={{ height: "100%", color: "white" }}
-          >
-            <AccountCircle
-              sx={{ width: 56, height: 40 }}
-              className="nav-accountCircle"
-            />
-          </Link>
-        </li>
-      </ul>
-    </nav>
+      <nav>
+        <ul className="navbar-nav" style={{ color: "white" }}>
+          <li className="nav-item nav-logo">
+            <Link to="/" className="nav-link">
+              <img className="navbar-logo" src={eventLogo} alt="Events" />
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              to="/event-dashboard"
+              className="nav-link"
+              style={{ height: "100%", margin: "10px", color: "white" }}
+            >
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              to="/create-event"
+              className="nav-link"
+              style={{ height: "100%", margin: "10px", color: "white" }}
+            >
+              Create Event
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <nav>
+        <ul className="navbar-nav" style={{ color: "white" }}>
+          <li className="nav-item nav-date">
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="System Time"
+                value={mimicDate}
+                color="primary"
+                onChange={(newValue) => {
+                  mimicTime(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </li>
+          <li>
+            <Link
+              to="/account"
+              className="nav-link"
+              style={{ height: "100%", color: "white" }}
+            >
+              <AccountCircle
+                sx={{ width: 56, height: 40 }}
+                className="nav-accountCircle"
+              />
+            </Link>
+          </li>
+          <li className="nav-item">
+            {/* <Link to ="/rest_login" className="nav-link">Logout</Link> */}
+            <Link
+              to="/"
+              className="nav-link"
+              style={{ height: "100%", margin: "10px", color: "white" }}
+              onClick={() => logout(dispatch)}
+            >
+              Logout
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </div>
   );
 }
 
