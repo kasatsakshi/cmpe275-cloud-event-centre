@@ -27,9 +27,9 @@ public class TimeService {
 
 	public List<Event> setTime(String time) {
 		LocalDateTime newTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		List<Event> cancelledEvents = eventService.eventStatusTrigger(newTime);
+		List<Event> finishedEvents = eventService.eventStatusTrigger(newTime);
 		this.time.setSystemTime(newTime);
-		return cancelledEvents;
+		return finishedEvents;
 	}
 
 	public LocalDateTime getTime() {

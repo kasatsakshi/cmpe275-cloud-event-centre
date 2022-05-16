@@ -158,6 +158,12 @@ public class EventService {
 	public List<Event> eventStatusTrigger(LocalDateTime endTime) {
 		List<Event> finishedEvents = eventDao.findByEndTimeBefore(endTime);
 		finishedEvents.forEach((event) -> finishEvent(event));
+		List<Event> registrationClosedEvents = eventDao.findByDeadlineBefore(endTime);
+		registrationClosedEvents.forEach((event) -> {
+			event.setStatus(EventStatus.REGISTRATION_CLOSED);
+			eventDao.save(event);
+		});
+		finishedEvents.addAll(registrationClosedEvents);
 		return finishedEvents;
 	}
 
