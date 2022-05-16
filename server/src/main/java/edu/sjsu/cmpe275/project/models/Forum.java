@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe275.project.types.ForumStatus;
@@ -36,10 +37,11 @@ public class Forum {
 
 	@ManyToOne
 	@JoinColumn(name = "event_id", nullable = false)
+	@JsonIncludeProperties({ "id", "title", "status" })
 	private Event event;
 
 	@OneToMany(mappedBy = "forum", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"forum"})
+	@JsonIgnoreProperties({ "forum" })
 	private Set<Question> questions;
 
 	public Forum() {

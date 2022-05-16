@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.models;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.persistence.Column;
@@ -28,10 +29,12 @@ public class Answer {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIncludeProperties({ "id", "screenName" })
 	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "question_id", nullable = false)
+	@JsonIncludeProperties({ "id", "text" })
 	private Question question;
 
 	public Answer() {

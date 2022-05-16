@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.project.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.persistence.Column;
@@ -32,13 +33,16 @@ public class Question {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIncludeProperties({ "id", "screenName" })
 	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "forum_id", nullable = false)
+	@JsonIncludeProperties({ "id" })
 	private Forum forum;
 
 	@OneToMany(mappedBy = "question")
+	@JsonIncludeProperties({ "id", "text", "user" })
 	private Set<Answer> answers;
 
 	public Question() {

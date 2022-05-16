@@ -11,6 +11,8 @@ import edu.sjsu.cmpe275.project.models.Event;
 @Repository
 public interface EventDao extends JpaRepository<Event, Long> {
 
+	List<Event> findByStartTimeBefore(LocalDateTime startTime);
+
 	List<Event> findByEndTimeBefore(LocalDateTime endTime);
 
 	List<Event> findByDeadlineBefore(LocalDateTime endTime);

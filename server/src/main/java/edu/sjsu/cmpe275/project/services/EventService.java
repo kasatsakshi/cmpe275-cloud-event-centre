@@ -156,11 +156,21 @@ public class EventService {
 	}
 
 	public List<Event> eventStatusTrigger(LocalDateTime endTime) {
-		List<Event> finishedEvents = eventDao.findByEndTimeBefore(endTime);
-		finishedEvents.forEach((event) -> finishEvent(event));
 		List<Event> registrationClosedEvents = eventDao.findByDeadlineBefore(endTime);
 		registrationClosedEvents.forEach((event) -> {
-			event.setStatus(EventStatus.REGISTRATION_CLOSED);
+			if (event.getParticipants().size() < event.getMinimumParticipants()) {
+				event.setStatus(EventStatus.CANCELLED);
+			} else
+				event.setStatus(EventStatus.REGISTRATION_CLOSED);
+			eventDao.save(event);
+		});
+		List<Event> activeEvents = eventDao.findByStartTimeBefore(endTime);
+		activeEvents.forEach((event) -> {
+			event.setStatus(EventStatus.ACTIVE);
+		});
+		List<Event> finishedEvents = eventDao.findByEndTimeBefore(endTime);
+		finishedEvents.forEach((event) -> {
+			event.setStatus(EventStatus.FINISHED);
 			eventDao.save(event);
 		});
 		finishedEvents.addAll(registrationClosedEvents);

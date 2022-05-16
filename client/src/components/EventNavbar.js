@@ -115,12 +115,10 @@ function EventNavbar() {
             <Link
               to="/account"
               className="nav-link"
-              style={{ height: "100%", color: "white" }}
+              style={{ height: "100%", margin: "10px", color: "white" }}
             >
               <AccountCircle
                 sx={{
-                  width: 56,
-                  height: 40,
                   marginLeft: "10px",
                   marginRight: "10px",
                 }}
@@ -131,12 +129,12 @@ function EventNavbar() {
           </li>
           <li
             className="nav-item"
-            style={{ padding: "auto", marginLeft: "15px" }}
+            // style={{ padding: "auto", marginLeft: "15px" }}
           >
             <Link
               to="/"
               className="nav-link"
-              style={{ height: "100%", color: "white" }}
+              style={{ height: "100%", margin: "10px", color: "white" }}
               onClick={() => logout(dispatch)}
             >
               Logout
