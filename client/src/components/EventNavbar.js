@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./temp.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/user";
 import eventLogo from "../eventcloudlogo.png";
@@ -16,7 +16,7 @@ import { AccountCircle } from "@mui/icons-material";
 function EventNavbar() {
   const dispatch = useDispatch();
   const [mimicDate, setMimicDate] = React.useState(null);
-
+  const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
     axios
       .get("/api/time")
@@ -118,17 +118,25 @@ function EventNavbar() {
               style={{ height: "100%", color: "white" }}
             >
               <AccountCircle
-                sx={{ width: 56, height: 40 }}
+                sx={{
+                  width: 56,
+                  height: 40,
+                  marginLeft: "10px",
+                  marginRight: "10px",
+                }}
                 className="nav-accountCircle"
               />
+              {currentUser.screenName}
             </Link>
           </li>
-          <li className="nav-item">
-            {/* <Link to ="/rest_login" className="nav-link">Logout</Link> */}
+          <li
+            className="nav-item"
+            style={{ padding: "auto", marginLeft: "15px" }}
+          >
             <Link
               to="/"
               className="nav-link"
-              style={{ height: "100%", margin: "10px", color: "white" }}
+              style={{ height: "100%", color: "white" }}
               onClick={() => logout(dispatch)}
             >
               Logout

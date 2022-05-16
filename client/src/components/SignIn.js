@@ -41,6 +41,11 @@ function SignIn() {
       password: userProfile.sub,
       provider: "google",
     });
+    setTimeout(() => {
+      if (!currentUser) {
+        setShowError(true);
+      }
+    }, 2000);
   };
 
   const handleGoogleSignUp = (googleData) => {
