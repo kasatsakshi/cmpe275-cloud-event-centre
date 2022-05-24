@@ -8,5 +8,5 @@ package edu.sjsu.cmpe275.project.types;
  *
  */
 public enum ForumStatus {
-	ACTIVE, CLOSE
+	ACTIVE, CLOSED
 }
