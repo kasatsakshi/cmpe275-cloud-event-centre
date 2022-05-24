@@ -33,7 +33,6 @@ public class TimeService {
 	}
 
 	public LocalDateTime getTime() {
-		List<Event> finishedEvents = eventService.eventStatusTrigger(this.time.getSystemTime());
 		return this.time.getSystemTime();
 	}
 }
