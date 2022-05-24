@@ -9,6 +9,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Button = styled.button`
   width: 100px;
@@ -27,8 +28,9 @@ const Button = styled.button`
 
 function Account() {
   const user = useSelector((state) => state.user.currentUser);
-  const [recieved, setRecieved] = useState("");
+  const [recieved, setRecieved] = useState([]);
   const [pending, setPending] = useState("");
+  const [events,setEvents] = useState([]);
 
   const approve = (id) => {
     axios
@@ -55,6 +57,14 @@ function Account() {
       axios.get("/api/user/recievedrequests/" + user.id).then((response) => {
         console.log(response.data);
         setRecieved(response.data);
+        var groupBy = function(xs, key,tit) {
+          return xs.reduce(function(rv, x) {
+            (rv[x[key][tit]] = rv[x[key][tit]] || []).push(x);
+            return rv;
+          }, {});
+        };
+       
+        setEvents(groupBy(response.data, 'event','title'));
       });
 
       axios.get("/api/user/signuprequests/" + user.id).then((response) => {
@@ -63,6 +73,22 @@ function Account() {
     } catch (error) {
       console.log(error);
     }
+    finally{
+    }
+  }
+
+  function groupfunc(){
+    var groupBy = function(xs, key,tit) {
+      return xs.reduce(function(rv, x) {
+        (rv[x[key][tit]] = rv[x[key][tit]] || []).push(x);
+        return rv;
+      }, {});
+    };
+    setEvents(groupBy(recieved, 'event','title'));
+  }
+
+  const userpage = (user) =>{
+    localStorage.setItem("approveuser",JSON.stringify(user));
   }
 
   useEffect(() => {
@@ -77,15 +103,25 @@ function Account() {
         {recieved && recieved.length > 0 ? (
           <div className="account-divs">
             <h5>Recieved Requests</h5>
-            {recieved.map((request) => {
+
+            {Object.entries(events).map(([key, value]) => (
+              <Card key={key}>
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    
+                    <Typography variant="h5" component="div">
+                      {key}
+                    </Typography>
+                    {value.map((request) => {
               return (
                 <Card variant="outlined" sx={{ minWidth: 275 }}>
                   <CardContent>
-                    <Typography variant="h5" component="div">
-                      {request.event.title}
-                    </Typography>
+                    
                     <Typography sx={{ mb: 1.5 }}>
-                      requested by: {request.user.fullName}
+                      Requested by: 
+                      <Link to="/userprofile">
+                      <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
+                      </Link>
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -117,6 +153,56 @@ function Account() {
                 </Card>
               );
             })}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+
+            <p>-----------------------------------------------</p>
+
+            {/* {recieved.map((request) => {
+              return (
+                <Card variant="outlined" sx={{ minWidth: 275 }}>
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {request.event.title}
+                    </Typography>
+                    <Typography sx={{ mb: 1.5 }}>
+                      Requested by: 
+                      <Link to="/userprofile">
+                      <button onClick={(e) => userpage(request.user)}>{request.user.fullName}</button>
+                      </Link>
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    {request.status === "PENDING" ? (
+                      <>
+                        <Button
+                          disabled={request.status != "PENDING"}
+                          size="small"
+                          onClick={() => approve(request.id)}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="small"
+                          disabled={request.status != "PENDING"}
+                          onClick={() => reject(request.id)}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    ) : (
+                      <CardContent>
+                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                          {request.status}
+                        </Typography>
+                      </CardContent>
+                    )}
+                  </CardActions>
+                </Card>
+              );
+            })} */}
           </div>
         ) : (
           <div></div>
