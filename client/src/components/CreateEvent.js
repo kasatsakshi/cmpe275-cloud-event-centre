@@ -7,6 +7,7 @@ import EventNavbar from "./EventNavbar";
 import "./temp.css";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { cities, states } from "../places";
 
 function CreateEvent() {
   const user = useSelector((state) => state.user.currentUser);
@@ -25,8 +26,8 @@ function CreateEvent() {
     maximumParticipants: "",
     creatorId: user.id,
     street: "",
-    city: "",
-    state: "",
+    city: "San Jose",
+    state: "California",
     zip: "",
     stTime: "",
     enTime: "",
@@ -95,7 +96,7 @@ function CreateEvent() {
     <>
       <EventNavbar />
       <div
-        class="container"
+        className="container"
         style={{
           width: "50%",
           marginTop: "25px",
@@ -122,7 +123,6 @@ function CreateEvent() {
             />
 
             <TextField
-              required
               id="description"
               placeholder="Description"
               label="Description"
@@ -251,9 +251,9 @@ function CreateEvent() {
               onChange={(e) => onChange(e)}
               style={{ margin: "10px" }}
             />
-            <TextField
+            {/* <TextField
               required
-              id="name"
+              id="city"
               placeholder="City"
               label="City"
               className="register-input-fields"
@@ -261,8 +261,22 @@ function CreateEvent() {
               value={city}
               onChange={(e) => onChange(e)}
               style={{ margin: "10px" }}
-            />
-            <TextField
+            /> */}
+            {/* <span style={{ opacity: "0.6", fontSize: "13px" }}>City</span> */}
+            <select
+              className="register-input-fields"
+              name="city"
+              value={city}
+              onChange={(e) => onChange(e)}
+            >
+              <option value="City" disabled>
+                Select City
+              </option>
+              {cities.map((data, idx) => (
+                <option key={idx}>{data}</option>
+              ))}
+            </select>
+            {/* <TextField
               required
               id="name"
               placeholder="State"
@@ -272,7 +286,21 @@ function CreateEvent() {
               value={state}
               onChange={(e) => onChange(e)}
               style={{ margin: "10px" }}
-            />
+            /> */}
+            {/* <span style={{ opacity: "0.6", fontSize: "13px" }}>State</span> */}
+            <select
+              className="register-input-fields"
+              name="state"
+              value={state}
+              onChange={(e) => onChange(e)}
+            >
+              <option value="State" disabled>
+                Select State
+              </option>
+              {states.map((data, idx) => (
+                <option key={idx}>{data}</option>
+              ))}
+            </select>
             <TextField
               required
               id="name"
