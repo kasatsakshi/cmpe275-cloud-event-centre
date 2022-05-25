@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,8 @@ import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
 import edu.sjsu.cmpe275.project.types.EventStatus;
 import edu.sjsu.cmpe275.project.types.ForumStatus;
 import edu.sjsu.cmpe275.project.types.ForumType;
+import edu.sjsu.cmpe275.project.util.EmailTemplates;
+import jakarta.mail.MessagingException;
 
 @Service
 public class EventService {
@@ -30,6 +33,11 @@ public class EventService {
 
 	@Autowired
 	ForumService forumService;
+
+	@Autowired
+	NotificationService notificationService;
+
+	private EmailTemplates emailTemplates;
 
 	/**
 	 * Find event by ID
@@ -77,11 +85,14 @@ public class EventService {
 	 * @param state
 	 * @param zip
 	 * @return
+	 * @throws MessagingException
+	 * @throws UnsupportedEncodingException
 	 */
 	public Event createEvent(String title, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime deadline,
 			Integer minimumParticipants, Integer maximumParticipants, Integer fee, AdmissionPolicy admissionPolicy,
 			Long creatorId, Optional<String> description, Optional<String> street, Optional<String> city,
-			Optional<String> state, Optional<String> zip, EventStatus status) {
+			Optional<String> state, Optional<String> zip, EventStatus status)
+			throws UnsupportedEncodingException, MessagingException {
 		Event event = new Event();
 		User creator = userService.findUserById(creatorId);
 		if (creator == null) {
@@ -94,6 +105,7 @@ public class EventService {
 		forumService.createForum(event, ForumType.SIGNUP, ForumStatus.ACTIVE);
 		forumService.createForum(event, ForumType.PARTICIPANT, ForumStatus.CLOSED);
 
+		notificationService.sendEmailNotification(creator, event, emailTemplates.getEventCreatedEmail());
 		return response;
 	}
 
@@ -154,6 +166,15 @@ public class EventService {
 			participants.add(participant);
 		event.setParticipants(participants);
 		Event response = eventDao.save(event);
+		try {
+			notificationService.sendEmailNotification(participant, event, emailTemplates.getEventSignupSuccessEmail());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return response;
 	}
 
@@ -162,6 +183,18 @@ public class EventService {
 		registrationClosedEvents.forEach((event) -> {
 			if (event.getParticipants().size() < event.getMinimumParticipants()) {
 				event.setStatus(EventStatus.CANCELLED);
+				for (int i = 0; i < event.getParticipants().size(); i++) {
+					try {
+						notificationService.sendEmailNotification(event.getParticipants().get(i), event,
+								emailTemplates.getEventCancelledEmail());
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MessagingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			} else {
 				event.setStatus(EventStatus.REGISTRATION_CLOSED);
 
@@ -171,6 +204,19 @@ public class EventService {
 		List<Event> activeEvents = eventDao.findByStartTimeBefore(endTime);
 		activeEvents.forEach((event) -> {
 			event.setStatus(EventStatus.ACTIVE);
+			for (int i = 0; i < event.getParticipants().size(); i++) {
+				try {
+					notificationService.sendEmailNotification(event.getParticipants().get(i), event,
+							emailTemplates.getEventStartedEmail());
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			eventDao.save(event);
 		});
 		List<Event> finishedEvents = eventDao.findByEndTimeBefore(endTime);
 		finishedEvents.forEach((event) -> {

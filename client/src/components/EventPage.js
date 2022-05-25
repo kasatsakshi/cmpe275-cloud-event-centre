@@ -50,7 +50,7 @@ function EventPage() {
       axios
         .get("/api/event/" + localStorage.getItem("eventId"))
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setEvent(response.data);
         });
       setLoading(false);
@@ -158,6 +158,7 @@ function EventPage() {
                       padding: "20px",
                       cursor: "pointer",
                     }}
+                    disabled={event.status !== "REGISTRATION_OPEN"}
                     onClick={() => {
                       setActiveTab("2");
                     }}
@@ -173,6 +174,22 @@ function EventPage() {
                     >
                       Signup Forum
                     </p>
+                    {event.status !== "REGISTRATION_OPEN" ? (
+                      <p
+                        className="black b"
+                        style={{
+                          margin: "auto",
+                          textAlign: "center",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                          color: "gray",
+                        }}
+                      >
+                        (Closed)
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </HeaderNavLink>
                   <hr style={{ margin: "5px" }} />
                 </NavItem>
@@ -200,23 +217,23 @@ function EventPage() {
                       }}
                     >
                       Participant Forum{" "}
-                      {event.status === "REGISTRATION_OPEN" ? (
-                        <p
-                          className="black b"
-                          style={{
-                            margin: "auto",
-                            textAlign: "center",
-                            fontSize: "10px",
-                            fontWeight: "bold",
-                            color: "gray",
-                          }}
-                        >
-                          (Closed)
-                        </p>
-                      ) : (
-                        ""
-                      )}
                     </p>
+                    {event.status === "REGISTRATION_OPEN" ? (
+                      <p
+                        className="black b"
+                        style={{
+                          margin: "auto",
+                          textAlign: "center",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                          color: "gray",
+                        }}
+                      >
+                        (Closed)
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </HeaderNavLink>
                   <hr style={{ margin: "5px" }} />
                 </NavItem>

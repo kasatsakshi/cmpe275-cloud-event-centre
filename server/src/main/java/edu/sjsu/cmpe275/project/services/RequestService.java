@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.RequestStatus;
+import edu.sjsu.cmpe275.project.util.EmailTemplates;
+import jakarta.mail.MessagingException;
 
 /**
  * @author Siddharth Sircar
@@ -30,6 +33,11 @@ public class RequestService {
 
 	@Autowired
 	EventRequestDao eventRequestDao;
+
+	@Autowired
+	NotificationService notificationService;
+
+	private EmailTemplates emailTemplates;
 
 	/**
 	 * Send Request for Approval Event
@@ -65,6 +73,27 @@ public class RequestService {
 
 		if (status == RequestStatus.ACCEPTED) {
 			eventService.addParticipant(request.getUser(), request.getEvent());
+			try {
+				notificationService.sendEmailNotification(request.getUser(), request.getEvent(),
+						emailTemplates.getSignupRequestAcceptedEmail());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				notificationService.sendEmailNotification(request.getUser(), request.getEvent(),
+						emailTemplates.getSignupRequestRejectedEmail());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return response;
 	}

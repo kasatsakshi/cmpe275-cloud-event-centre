@@ -74,13 +74,17 @@ function ParticipantForum() {
       .get(`/api/forum?eventId=${localStorage.getItem("eventId")}`)
       .then((res) => {
         if (res.status === 200) {
-          setForum(res.data);
+          let forumDetail = res.data.filter(
+            (forum) => forum.type === "PARTICIPANT"
+          )[0];
+          // console.log(forumDetail);
+          setForum(forumDetail);
           setQuestionFormData({
             ...questionFormData,
-            forumId: res.data.id,
+            forumId: forumDetail.id,
             userId: currentUser.id,
           });
-          console.log(res.data.questions);
+          // console.log(forumDetail.questions);
         }
       })
       .catch((err) => {
@@ -119,10 +123,8 @@ function ParticipantForum() {
       {/* <EventNavbar /> */}
       {signUpForum ? (
         <div className="forum-container">
-          <h1 className="forum-title">
-            SignUp Forum for {signUpForum.event.title}
-          </h1>
-          {signUpForum.event.status === "REGISTRATION_OPEN" ? (
+          <h1 className="forum-title">Participant Forum</h1>
+          {signUpForum.status !== "CLOSED" ? (
             <>
               <Input
                 autoFocus
@@ -253,7 +255,7 @@ function ParticipantForum() {
               })}
             </div>
           ) : (
-            <div></div>
+            <div> No messages posted.</div>
           )}
         </div>
       ) : (

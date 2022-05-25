@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import edu.sjsu.cmpe275.project.services.RequestService;
 import edu.sjsu.cmpe275.project.services.UserService;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
 import edu.sjsu.cmpe275.project.types.EventStatus;
+import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/api/event")
@@ -96,9 +98,12 @@ public class EventController {
 	 * @param state
 	 * @param zip
 	 * @return
+	 * @throws MessagingException
+	 * @throws UnsupportedEncodingException
 	 */
 	@PostMapping(path = "/create")
-	public ResponseEntity<?> createEvent(@Validated @RequestBody CreateEventRequest createEventRequest) {
+	public ResponseEntity<?> createEvent(@Validated @RequestBody CreateEventRequest createEventRequest)
+			throws UnsupportedEncodingException, MessagingException {
 		if (createEventRequest.getTitle() == null || createEventRequest.getStartTime() == null
 				|| createEventRequest.getEndTime() == null || createEventRequest.getDeadline() == null
 				|| createEventRequest.getMinimumParticipants() == null

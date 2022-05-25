@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,8 @@ import edu.sjsu.cmpe275.project.models.Question;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.ForumStatus;
 import edu.sjsu.cmpe275.project.types.ForumType;
+import edu.sjsu.cmpe275.project.util.EmailTemplates;
+import jakarta.mail.MessagingException;
 
 @Service
 public class ForumService {
@@ -34,6 +37,12 @@ public class ForumService {
 	@Autowired
 	AnswerDao answerDao;
 
+	@Autowired
+	NotificationService notificationService;
+
+	@Autowired
+	private EmailTemplates emailTemplates;
+
 	public Forum createForum(Event event, ForumType forumType, ForumStatus forumStatus) {
 		Forum forum = new Forum(event, forumType, forumStatus);
 		return forumDao.save(forum);
@@ -49,6 +58,18 @@ public class ForumService {
 		Question question = new Question(forum, user, text, pictureUrl.orElse(null));
 		questionDao.save(question);
 		forum.addQuestion(question);
+
+		try {
+			notificationService.sendEmailNotification(forum.getEvent().getCreator(), forum.getEvent(),
+					emailTemplates.getMessageInForumEmail());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return forumDao.save(forum);
 	}
 

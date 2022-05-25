@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.OrganizerReviews;
 import edu.sjsu.cmpe275.project.models.ParticipantReviews;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.util.EmailTemplates;
+import jakarta.mail.MessagingException;
 
 @Service
 public class ReviewService {
@@ -29,6 +32,11 @@ public class ReviewService {
 
 	@Autowired
 	EventDao eventDao;
+
+	@Autowired
+	NotificationService notificationService;
+
+	private EmailTemplates emailTemplates;
 
 	/**
 	 * Get participant reviews
@@ -66,7 +74,15 @@ public class ReviewService {
 		Event event = eventDao.findById(eventId).get();
 		ParticipantReviews review = new ParticipantReviews(user, event, text, rating);
 		review = participantReviewDao.save(review);
-
+		try {
+			notificationService.sendEmailNotification(user, event, emailTemplates.getReviewReceivedEmail());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<List<ParticipantReviews>> reviews = participantReviewDao.findByUserId(userId);
 		if (reviews.isPresent()) {
 			int reviewRating = 0;
@@ -94,7 +110,15 @@ public class ReviewService {
 		Event event = eventDao.findById(eventId).get();
 		OrganizerReviews review = new OrganizerReviews(user, event, text, rating);
 		review = organizerReviewDao.save(review);
-
+		try {
+			notificationService.sendEmailNotification(user, event, emailTemplates.getReviewReceivedEmail());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<List<OrganizerReviews>> reviews = organizerReviewDao.findByUserId(userId);
 		if (reviews.isPresent()) {
 			int reviewRating = 0;

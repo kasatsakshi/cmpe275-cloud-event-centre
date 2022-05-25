@@ -28,6 +28,9 @@ public class UserService {
 	UserDao userDao;
 
 	@Autowired
+	NotificationService notificationService;
+
+	@Autowired
 	EventRequestDao eventRequestDao;
 
 	@Autowired
@@ -106,7 +109,6 @@ public class UserService {
 			user.setVerificationCode(null);
 			user.setStatus(AccountStatus.ACTIVE);
 			userDao.save(user);
-
 			return true;
 		}
 
