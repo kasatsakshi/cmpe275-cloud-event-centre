@@ -7,7 +7,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-function UserProfile() {
+function OrganizerProfile() {
 
     const [user,setUser] = useState([]);
     const [review,setReview] = useState([]);
@@ -18,7 +18,7 @@ function UserProfile() {
 
 
             axios
-            .get("/api/review/participant",{
+            .get("/api/review/organizer",{
                 params: {
                     id: userlocal
                 }
@@ -97,4 +97,4 @@ function UserProfile() {
     );
   }
   
-  export default UserProfile;
+  export default OrganizerProfile;
