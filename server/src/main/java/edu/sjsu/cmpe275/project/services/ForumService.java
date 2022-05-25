@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.Forum;
 import edu.sjsu.cmpe275.project.models.Question;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.types.ForumStatus;
 import edu.sjsu.cmpe275.project.types.ForumType;
 
 @Service
@@ -31,8 +34,8 @@ public class ForumService {
 	@Autowired
 	AnswerDao answerDao;
 
-	public Forum createForum(Event event, ForumType forumType) {
-		Forum forum = new Forum(forumType, event);
+	public Forum createForum(Event event, ForumType forumType, ForumStatus forumStatus) {
+		Forum forum = new Forum(event, forumType, forumStatus);
 		return forumDao.save(forum);
 	}
 
@@ -56,6 +59,10 @@ public class ForumService {
 		question.addAnswer(answer);
 		answerDao.save(answer);
 		return questionDao.save(question);
+	}
+
+	public void forumStatusTrigger(LocalDateTime endTime) {
+		List<Forum> closedSignupForums;
 	}
 
 }

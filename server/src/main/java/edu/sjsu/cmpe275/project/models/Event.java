@@ -43,6 +43,9 @@ public class Event {
 	private String description;
 
 	@Column
+	private LocalDateTime creationTime;
+
+	@Column
 	private LocalDateTime startTime;
 
 	@Column
@@ -84,9 +87,15 @@ public class Event {
 	@Fetch(value = FetchMode.SUBSELECT)
 	@JsonIgnore
 	private Set<EventRequest> signupRequests;
-	
-	@OneToMany(mappedBy="event")
-    private Set<Forum> forums;
+
+	@OneToMany(mappedBy = "event")
+	private Set<Forum> forums;
+
+//	@OneToOne(mappedBy = "event")
+//	private Forum signupForum;
+//
+//	@OneToOne(mappedBy = "event")
+//	private Forum participantForum;
 
 	/**
 	 * @return the id
@@ -121,6 +130,14 @@ public class Event {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public LocalDateTime getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(LocalDateTime creationTime) {
+		this.creationTime = creationTime;
 	}
 
 	/**
@@ -261,6 +278,14 @@ public class Event {
 	 */
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
+	}
+
+	public Set<EventRequest> getSignupRequests() {
+		return signupRequests;
+	}
+
+	public void setSignupRequests(Set<EventRequest> signupRequests) {
+		this.signupRequests = signupRequests;
 	}
 
 	/**
