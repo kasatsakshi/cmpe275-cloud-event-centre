@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.project.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ForumService {
 		return forumDao.save(forum);
 	}
 
-	public Forum findForum(Long id) {
+	public List<Forum> findForum(Long id) {
 		return forumDao.findByEventId(id);
 	}
 
