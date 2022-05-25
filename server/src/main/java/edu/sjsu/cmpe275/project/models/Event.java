@@ -91,6 +91,15 @@ public class Event {
 	@OneToMany(mappedBy = "event")
 	private Set<Forum> forums;
 
+	@OneToMany(mappedBy = "event")
+	private Set<OrganizerReviews> OrganizerReviews;
+
+	@OneToMany(mappedBy = "event")
+	private Set<ParticipantReviews> ParticipantReviews;
+
+	@OneToMany(mappedBy = "event")
+	private Set<Forum> forums;
+
 //	@OneToOne(mappedBy = "event")
 //	private Forum signupForum;
 //

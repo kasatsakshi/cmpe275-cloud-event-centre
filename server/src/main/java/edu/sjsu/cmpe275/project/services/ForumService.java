@@ -39,7 +39,7 @@ public class ForumService {
 		return forumDao.save(forum);
 	}
 
-	public Forum findForum(Long id) {
+	public List<Forum> findForum(Long id) {
 		return forumDao.findByEventId(id);
 	}
 

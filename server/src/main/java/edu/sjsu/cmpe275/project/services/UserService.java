@@ -62,6 +62,8 @@ public class UserService {
 		String randomCode = RandomString.make(64);
 		user.setVerificationCode(randomCode);
 		user.setAuthProvider(provider);
+		user.setOrganizerReputation(0);
+		user.setParticipantReputation(0);
 		User response = userDao.save(user);
 		sendVerificationEmail(user, siteURL);
 		return response;

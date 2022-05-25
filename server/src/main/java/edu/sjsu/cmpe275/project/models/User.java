@@ -75,6 +75,12 @@ public class User {
 	@Embedded
 	private Address address;
 
+	@Column
+	private int participantReputation;
+
+	@Column
+	private int organizerReputation;
+
 	@OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({ "creator", "address", "participants" })
 	private List<Event> eventsCreated;
@@ -95,10 +101,20 @@ public class User {
 	private Set<EventRequest> requestsRecieved;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<Answer> answers;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<Question> questions;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonIgnore
+	private Set<OrganizerReviews> OrganizerReviews;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonIgnore
+	private Set<ParticipantReviews> ParticipantReviews;
 
 	/**
 	 * @return the id
@@ -220,6 +236,34 @@ public class User {
 	}
 
 	/**
+	 * @return the participantReputation
+	 */
+	public int getParticipantReputation() {
+		return participantReputation;
+	}
+
+	/**
+	 * @param participantReputation the participantReputation to set
+	 */
+	public void setParticipantReputation(int participantReputation) {
+		this.participantReputation = participantReputation;
+	}
+
+	/**
+	 * @return the organizerReputation
+	 */
+	public int getOrganizerReputation() {
+		return organizerReputation;
+	}
+
+	/**
+	 * @param organizerReputation the organizerReputation to set
+	 */
+	public void setOrganizerReputation(int organizerReputation) {
+		this.organizerReputation = organizerReputation;
+	}
+
+	/**
 	 * @return the eventsCreated
 	 */
 	public List<Event> getEventsCreated() {
@@ -315,6 +359,62 @@ public class User {
 	 */
 	public void setRequestsRecieved(Set<EventRequest> requestsRecieved) {
 		this.requestsRecieved = requestsRecieved;
+	}
+
+	/**
+	 * @return the answers
+	 */
+	public Set<Answer> getAnswers() {
+		return answers;
+	}
+
+	/**
+	 * @param answers the answers to set
+	 */
+	public void setAnswers(Set<Answer> answers) {
+		this.answers = answers;
+	}
+
+	/**
+	 * @return the questions
+	 */
+	public Set<Question> getQuestions() {
+		return questions;
+	}
+
+	/**
+	 * @param questions the questions to set
+	 */
+	public void setQuestions(Set<Question> questions) {
+		this.questions = questions;
+	}
+
+	/**
+	 * @return the organizerReviews
+	 */
+	public Set<OrganizerReviews> getOrganizerReviews() {
+		return OrganizerReviews;
+	}
+
+	/**
+	 * @param organizerReviews the organizerReviews to set
+	 */
+	public void setOrganizerReviews(Set<OrganizerReviews> organizerReviews) {
+		OrganizerReviews = organizerReviews;
+	}
+
+	/**
+	 * @return the participantReviews
+	 */
+	public Set<ParticipantReviews> getParticipantReviews() {
+		return ParticipantReviews;
+	}
+
+	/**
+	 * @param participantReviews the participantReviews to set
+	 */
+	public void setParticipantReviews(Set<ParticipantReviews> participantReviews) {
+		ParticipantReviews = participantReviews;
 	}
 
 }

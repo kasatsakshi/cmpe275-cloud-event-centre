@@ -46,10 +46,7 @@ const style = {
   p: 4,
 };
 
-function SignUpForum() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+function ParticipantForum() {
   const [openReply, setOpenReply] = React.useState(false);
   const handleOpenReply = () => setOpenReply(true);
   const handleCloseReply = () => setOpenReply(false);
@@ -266,4 +263,4 @@ function SignUpForum() {
   );
 }
 
-export default SignUpForum;
+export default ParticipantForum;
