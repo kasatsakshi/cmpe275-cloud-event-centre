@@ -219,7 +219,10 @@ function Account() {
                       {request.event.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      Organizer {request.creator.fullName}
+                      Organizer :
+                      <Link to="/orgprofile">
+                      <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
+                      </Link>
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       Status: {request.status}

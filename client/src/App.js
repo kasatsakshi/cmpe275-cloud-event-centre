@@ -19,6 +19,7 @@ import VerifyAccount from "./components/VerifyAccount";
 import SignUpForum from "./components/SignUpForum";
 import Account from "./components/Account";
 import UserProfile from './components/UserProfile';
+import OrganizerProfile from './components/OrganizerProfile';
 import SystemReport from "./components/SystemReport";
 
 function App() {
@@ -71,6 +72,12 @@ function App() {
             path="/userprofile"
             element={
               user ? <UserProfile /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/orgprofile"
+            element={
+              user ? <OrganizerProfile /> : <Navigate to="/" />
             }
           />
           <Route
