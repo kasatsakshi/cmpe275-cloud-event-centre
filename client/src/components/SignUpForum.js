@@ -124,7 +124,6 @@ function SignUpForum() {
 
   return (
     <div>
-      {/* <EventNavbar /> */}
       {signUpForum ? (
         <div className="forum-container">
           <h1 className="forum-title">Signup Forum</h1>
@@ -145,36 +144,10 @@ function SignUpForum() {
               <button className="forum-buttons" onClick={ask}>
                 Post Question
               </button>
-              {/* <button className="forum-buttons" onClick={handleOpen}>
-                Ask a question!
-              </button> */}
             </>
           ) : (
             <div></div>
           )}
-          {/* <Modal
-            id="question-modal"
-            open={open}
-            onClose={handleClose}
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Input
-                autoFocus
-                placeholder="Add your question here"
-                onChange={(e) => {
-                  setQuestion(e.target.value);
-                  setQuestionFormData({
-                    ...questionFormData,
-                    text: e.target.value,
-                  });
-                }}
-              />
-              <button className="forum-buttons" onClick={ask}>
-                Post Question
-              </button>
-            </Box>
-          </Modal> */}
           <Modal
             id="reply-modal"
             open={openReply}

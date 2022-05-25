@@ -53,7 +53,7 @@ function ParticipantForum() {
   const [question, setQuestion] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [response, setResponse] = useState("");
-  const [signUpForum, setForum] = useState("");
+  const [participantForum, setForum] = useState("");
   const [questionFormData, setQuestionFormData] = useState({
     forumId: "",
     userId: "",
@@ -120,11 +120,10 @@ function ParticipantForum() {
 
   return (
     <div>
-      {/* <EventNavbar /> */}
-      {signUpForum ? (
+      {participantForum ? (
         <div className="forum-container">
           <h1 className="forum-title">Participant Forum</h1>
-          {signUpForum.status !== "CLOSED" ? (
+          {participantForum.status !== "CLOSED" ? (
             <>
               <Input
                 autoFocus
@@ -141,36 +140,10 @@ function ParticipantForum() {
               <button className="forum-buttons" onClick={ask}>
                 Post Question
               </button>
-              {/* <button className="forum-buttons" onClick={handleOpen}>
-                Ask a question!
-              </button> */}
             </>
           ) : (
             <div></div>
           )}
-          {/* <Modal
-            id="question-modal"
-            open={open}
-            onClose={handleClose}
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Input
-                autoFocus
-                placeholder="Add your question here"
-                onChange={(e) => {
-                  setQuestion(e.target.value);
-                  setQuestionFormData({
-                    ...questionFormData,
-                    text: e.target.value,
-                  });
-                }}
-              />
-              <button className="forum-buttons" onClick={ask}>
-                Post Question
-              </button>
-            </Box>
-          </Modal> */}
           <Modal
             id="reply-modal"
             open={openReply}
@@ -196,10 +169,10 @@ function ParticipantForum() {
               </button>
             </Box>
           </Modal>
-          {signUpForum.questions.length > 0 ? (
+          {participantForum.questions.length > 0 ? (
             <div className="account-divs">
               <h5>Questions</h5>
-              {signUpForum.questions.map((question) => {
+              {participantForum.questions.map((question) => {
                 return (
                   <Card
                     key={question.id}
@@ -211,7 +184,7 @@ function ParticipantForum() {
                         {question.text}
                       </Typography>
                     </CardContent>
-                    {signUpForum.event.status === "REGISTRATION_OPEN" ? (
+                    {participantForum.event.status === "REGISTRATION_OPEN" ? (
                       <CardActions>
                         <Button
                           size="small"
