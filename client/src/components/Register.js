@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./Register.css";
 import { signup } from "../redux/user";
+import { cities, states } from "../places";
 
 const Error = styled.span`
   color: red;
@@ -23,8 +24,8 @@ function Register() {
   const [accountType, setAccountType] = useState("");
   const [description, setDescription] = useState("");
   const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  const [city, setCity] = useState("San Jose");
+  const [state, setState] = useState("California");
   const [zip, setZip] = useState("");
   const [provider, setProvider] = useState("");
   const [showError, setShowError] = useState(false);
@@ -215,7 +216,7 @@ function Register() {
           style={{ paddingBottom: 20 }}
           onChange={(e) => setStreet(e.target.value)}
         />
-        <TextField
+        {/* <TextField
           required
           label="City"
           id="city"
@@ -224,8 +225,22 @@ function Register() {
           className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setCity(e.target.value)}
-        />
-        <TextField
+        /> */}
+        <select
+          className="register-input-fields"
+          name="city"
+          value={city}
+          style={{ marginBottom: 20 }}
+          onChange={(e) => setCity(e.target.value)}
+        >
+          <option value="City" disabled>
+            Select City
+          </option>
+          {cities.map((data, idx) => (
+            <option key={idx}>{data}</option>
+          ))}
+        </select>
+        {/* <TextField
           required
           label="State"
           id="state"
@@ -234,7 +249,21 @@ function Register() {
           className="register-input-fields"
           style={{ paddingBottom: 20 }}
           onChange={(e) => setState(e.target.value)}
-        />
+        /> */}
+        <select
+          className="register-input-fields"
+          name="state"
+          value={state}
+          style={{ marginBottom: 20 }}
+          onChange={(e) => setState(e.target.value)}
+        >
+          <option value="State" disabled>
+            Select State
+          </option>
+          {states.map((data, idx) => (
+            <option key={idx}>{data}</option>
+          ))}
+        </select>
         <TextField
           required
           label="Zip Code"

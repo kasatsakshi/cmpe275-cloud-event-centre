@@ -19,6 +19,7 @@ import VerifyAccount from "./components/VerifyAccount";
 import SignUpForum from "./components/SignUpForum";
 import Account from "./components/Account";
 import UserProfile from './components/UserProfile';
+import SystemReport from "./components/SystemReport";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -70,6 +71,12 @@ function App() {
             path="/userprofile"
             element={
               user ? <UserProfile /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/system-report"
+            element={
+              user ? <SystemReport /> : <Navigate to="/" />
             }
           />
         </Routes>
