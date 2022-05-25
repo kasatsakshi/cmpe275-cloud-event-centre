@@ -94,6 +94,15 @@ function EventNavbar() {
               Create Event
             </Link>
           </li>
+          <li className="nav-item">
+            <Link
+              to="/system-report"
+              className="nav-link"
+              style={{ height: "100%", margin: "10px", color: "white" }}
+            >
+              System Report
+            </Link>
+          </li>
         </ul>
       </nav>
       <nav>
@@ -129,7 +138,7 @@ function EventNavbar() {
           </li>
           <li
             className="nav-item"
-            // style={{ padding: "auto", marginLeft: "15px" }}
+          // style={{ padding: "auto", marginLeft: "15px" }}
           >
             <Link
               to="/"
