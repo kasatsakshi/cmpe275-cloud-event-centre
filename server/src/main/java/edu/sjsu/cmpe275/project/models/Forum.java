@@ -48,10 +48,10 @@ public class Forum {
 
 	}
 
-	public Forum(ForumType type, Event event) {
+	public Forum(Event event, ForumType type, ForumStatus forumStatus) {
 		super();
 		this.type = type;
-		this.status = ForumStatus.ACTIVE;
+		this.status = forumStatus;
 		this.event = event;
 		this.questions = new HashSet<Question>();
 	}

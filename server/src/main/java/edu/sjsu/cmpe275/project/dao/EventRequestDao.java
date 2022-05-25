@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.EventRequest;
 import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.types.RequestStatus;
 
 public interface EventRequestDao extends JpaRepository<EventRequest, Long> {
 
@@ -43,4 +44,9 @@ public interface EventRequestDao extends JpaRepository<EventRequest, Long> {
 	 * @return
 	 */
 	Optional<List<EventRequest>> findByUser(User participant);
+
+	Integer countByUser(User user);
+
+	Integer countByUserAndStatusEquals(User user, RequestStatus status);
+	
 }

@@ -14,6 +14,7 @@ import edu.sjsu.cmpe275.project.models.Event;
 import edu.sjsu.cmpe275.project.models.User;
 import edu.sjsu.cmpe275.project.types.AdmissionPolicy;
 import edu.sjsu.cmpe275.project.types.EventStatus;
+import edu.sjsu.cmpe275.project.types.ForumStatus;
 import edu.sjsu.cmpe275.project.types.ForumType;
 
 @Service
@@ -86,11 +87,12 @@ public class EventService {
 		if (creator == null) {
 			return null;
 		}
-		setValues(event, title, startTime, endTime, deadline, minimumParticipants, maximumParticipants, fee,
-				admissionPolicy, creator, description, street, city, state, zip, status);
+		setValues(event, title, LocalDateTime.now(), startTime, endTime, deadline, minimumParticipants,
+				maximumParticipants, fee, admissionPolicy, creator, description, street, city, state, zip, status);
 		Event response = eventDao.save(event);
 
-		forumService.createForum(event, ForumType.SIGNUP);
+		forumService.createForum(event, ForumType.SIGNUP, ForumStatus.ACTIVE);
+		forumService.createForum(event, ForumType.PARTICIPANT, ForumStatus.CLOSED);
 
 		return response;
 	}
@@ -160,8 +162,10 @@ public class EventService {
 		registrationClosedEvents.forEach((event) -> {
 			if (event.getParticipants().size() < event.getMinimumParticipants()) {
 				event.setStatus(EventStatus.CANCELLED);
-			} else
+			} else {
 				event.setStatus(EventStatus.REGISTRATION_CLOSED);
+
+			}
 			eventDao.save(event);
 		});
 		List<Event> activeEvents = eventDao.findByStartTimeBefore(endTime);
@@ -212,11 +216,13 @@ public class EventService {
 	 * @param state
 	 * @param zip
 	 */
-	private void setValues(Event event, String title, LocalDateTime startTime, LocalDateTime endTime,
-			LocalDateTime deadline, Integer minimumParticipants, Integer maximumParticipants, Integer fee,
-			AdmissionPolicy admissionPolicy, User creator, Optional<String> description, Optional<String> street,
-			Optional<String> city, Optional<String> state, Optional<String> zip, EventStatus status) {
+	private void setValues(Event event, String title, LocalDateTime creationTime, LocalDateTime startTime,
+			LocalDateTime endTime, LocalDateTime deadline, Integer minimumParticipants, Integer maximumParticipants,
+			Integer fee, AdmissionPolicy admissionPolicy, User creator, Optional<String> description,
+			Optional<String> street, Optional<String> city, Optional<String> state, Optional<String> zip,
+			EventStatus status) {
 		event.setTitle(title);
+		event.setCreationTime(creationTime);
 		event.setStartTime(startTime);
 		event.setEndTime(endTime);
 		event.setDeadline(deadline);

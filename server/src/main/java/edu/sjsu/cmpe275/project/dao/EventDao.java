@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import edu.sjsu.cmpe275.project.models.Event;
+import edu.sjsu.cmpe275.project.models.User;
+import edu.sjsu.cmpe275.project.types.EventStatus;
 
 @Repository
 public interface EventDao extends JpaRepository<Event, Long> {
@@ -16,5 +18,21 @@ public interface EventDao extends JpaRepository<Event, Long> {
 	List<Event> findByEndTimeBefore(LocalDateTime endTime);
 
 	List<Event> findByDeadlineBefore(LocalDateTime endTime);
+
+	Integer countByCreationTimeBefore(LocalDateTime time);
+
+	Integer countByCreationTimeBeforeAndFeeGreaterThan(LocalDateTime time, Integer fee);
+
+	List<Event> findByDeadlineBeforeAndStatusEquals(LocalDateTime time, EventStatus status);
+
+	List<Event> findByEndTimeBeforeAndStatusEquals(LocalDateTime time, EventStatus status);
+
+	Integer countByCreator(User user);
+
+	Integer countByCreatorAndFeeGreaterThan(User user, Integer fee);
+
+	List<Event> findByCreatorAndStatusEquals(User user, EventStatus status);
+
+	List<Event> findByCreatorAndStatusEqualsAndFeeGreaterThan(User user, EventStatus status, Integer fee);
 
 }

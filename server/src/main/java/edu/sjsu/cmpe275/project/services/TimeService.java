@@ -25,15 +25,13 @@ public class TimeService {
 		this.time.setSystemTime(LocalDateTime.now());
 	}
 
-	public List<Event> setTime(String time) {
-		LocalDateTime newTime = LocalDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		List<Event> finishedEvents = eventService.eventStatusTrigger(newTime);
-		this.time.setSystemTime(newTime);
+	public List<Event> setTime(LocalDateTime time) {
+		List<Event> finishedEvents = eventService.eventStatusTrigger(time);
+		this.time.setSystemTime(time);
 		return finishedEvents;
 	}
 
 	public LocalDateTime getTime() {
-		List<Event> finishedEvents = eventService.eventStatusTrigger(this.time.getSystemTime());
 		return this.time.getSystemTime();
 	}
 }
