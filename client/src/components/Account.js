@@ -151,6 +151,7 @@ function Account() {
                               <b>
                                 User reputation: {request.user.participantReputation}
                               </b>
+                              <br />
                               <div>
                                 <button onClick={(handleOpenNewReview)}>See Reviews</button>
                                 <Modal
@@ -163,7 +164,7 @@ function Account() {
                                     {request.user && request.user.participantReviews && request.user.participantReviews.length > 0 ? (
                                       request.user.participantReviews.map((review) => {
                                         return (
-                                          <Card variant="outlined" sx={{ minWidth: 275 }}>
+                                          <Card variant="outlined" sx={{ minWidth: 275, marginTop: 2 }}>
                                             <CardContent>
                                               <Typography variant="h6" component="div">
                                                 <b>Rating</b>  : <b>{review.rating}</b>
