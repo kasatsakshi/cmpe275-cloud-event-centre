@@ -37,6 +37,7 @@ public class RequestService {
 	@Autowired
 	NotificationService notificationService;
 
+	@Autowired
 	private EmailTemplates emailTemplates;
 
 	/**

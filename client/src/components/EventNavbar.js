@@ -30,11 +30,11 @@ function EventNavbar() {
   }, [mimicDate]);
 
   const mimicTime = (newValue) => {
-    console.log(moment(newValue).format("YYYY-MM-DD HH:mm:ss"));
+    console.log(moment(newValue).format("YYYY-MM-DDTHH:mm"));
     axios
       .post("/api/time", null, {
         params: {
-          dateTime: moment(newValue).format("YYYY-MM-DD HH:mm:ss"),
+          dateTime: moment(newValue).format("YYYY-MM-DDTHH:mm"),
         },
       })
       .then((res) => {
@@ -138,7 +138,7 @@ function EventNavbar() {
           </li>
           <li
             className="nav-item"
-          // style={{ padding: "auto", marginLeft: "15px" }}
+            // style={{ padding: "auto", marginLeft: "15px" }}
           >
             <Link
               to="/"

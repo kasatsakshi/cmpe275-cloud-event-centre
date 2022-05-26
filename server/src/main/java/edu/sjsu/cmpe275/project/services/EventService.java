@@ -37,6 +37,7 @@ public class EventService {
 	@Autowired
 	NotificationService notificationService;
 
+	@Autowired
 	private EmailTemplates emailTemplates;
 
 	/**
