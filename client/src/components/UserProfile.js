@@ -6,95 +6,80 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import { useParams } from "react-router-dom";
 
-function UserProfile() {
-
-    const [user,setUser] = useState([]);
-    const [review,setReview] = useState([]);
-    useEffect(() => {
-        try {
-            var userlocal = JSON.parse(localStorage.getItem('approveuser')).id;
-            console.log(localStorage.getItem('approveuser'));
+function UserProfile({ user }) {
+  // const { id } = useParams();
+  // const [user, setUser] = useState([]);
 
 
-            axios
-            .get("/api/review/participant",{
-                params: {
-                    id: userlocal
-                }
-            })
-            .then((response) => {
-                console.log(response.data);
-                 setReview(response.data);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+  // async function getUser() {
+  //   try {
+  //     axios
+  //       .get("/api/user", {
+  //         params: {
+  //           id
+  //         }
+  //       })
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         setUser(response.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
 
+  //   } catch (error) {
+  //     console.log(error);
 
-          axios
-            .get("/api/user",{
-                params: {
-                    id: userlocal
-                }
-            })
-            .then((response) => {
-                console.log(response.data);
-                 setUser(response.data);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-    
-        } catch (error) {
-          console.log(error);
-          
-        }
-      }, []);
+  //   }
+  // }
+  // useEffect(async () => {
+  //   await getUser()
+  // }, []);
 
-
-
-    return(
-        <div>
-        <EventNavbar />
-        <div className="event-page-container">
+  return (
+    <div>
+      <div className="event-page-container">
         <div className="event-container">
-          <h1 className="event-title">{user.fullName}</h1>
+          <h3 className="event-title">{user.fullName}</h3>
           <div className="event-description">{user.description}</div>
-          {/* <div className="event-gender"><b>Gender</b>  {user.gender}</div> */}
-          <div className="event-owner event-text">
-            <b>Screen Name</b> {user.screenName}
-          </div>
           <div
             className="event-date event-text"
             style={{ display: "flex", flexDirection: "column" }}
           >
             <div className="event-text">
-              <b>Email  </b> {user.email}
+              <b>Email:  </b> {user.email}
             </div>
 
             <div className="event-text">
-              <b>Reviews  </b> 
+              <b>Reviews:  </b>
             </div>
+
+            {user && user.participantReviews && user.participantReviews.length > 0 ? (
+              user.participantReviews.map((review) => {
+                return (
+                  <Card variant="outlined" sx={{ minWidth: 275 }}>
+                    <CardContent>
+                      <Typography variant="h6" component="div">
+                        <b>Rating</b>  : <b>{review.rating}</b>
+                      </Typography>
+                      <Typography variant="h6" component="div">
+                        <b>{review.event.title}</b>   : {review.text}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )
+              })
+            ) : (
+              <p>No Participant Reviews</p>
+            )
+            }
           </div>
-          {review.map((request) => {
-              return (
-                <Card variant="outlined" sx={{ minWidth: 275 }}>
-                  <CardContent>
-                  <Typography variant="h6" component="div">
-                  <b>Rating</b>  : <b>{request.rating}</b>  
-                    </Typography>
-                    <Typography variant="h6" component="div">
-                      <b>{request.event.title}</b>   : {request.text}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              );
-            })} 
-        </div>  
+        </div>
       </div>
-      </div>
-    );
-  }
-  
-  export default UserProfile;
+    </div >
+  );
+}
+
+export default UserProfile;

@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Stack } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import UserProfile from "./UserProfile";
 
 const Button = styled.button`
   width: 100px;
@@ -27,12 +29,29 @@ const Button = styled.button`
   }
 `;
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  height: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function Account() {
   const user = useSelector((state) => state.user.currentUser);
   const [recieved, setRecieved] = useState([]);
   const [pending, setPending] = useState("");
   const [events, setEvents] = useState([]);
   const [userInfo, setUserInfo] = useState();
+
+  const [reviewOpen, setReviewOpen] = React.useState(false);
+  const handleOpenNewReview = () => setReviewOpen(true);
+  const handleCloseNewReview = () => setReviewOpen(false);
 
   const approve = (id) => {
     axios
@@ -54,7 +73,7 @@ function Account() {
       .catch((err) => alert(JSON.stringify(err.response.data)));
   };
 
-  function getEvent() {
+  async function getEvent() {
     try {
       axios.get("/api/user/recievedrequests/" + user.id).then((response) => {
         setRecieved(response.data);
@@ -74,11 +93,9 @@ function Account() {
     } catch (error) {
       console.log(error);
     }
-    finally {
-    }
   }
 
-  function getUserInfo() {
+  async function getUserInfo() {
     try {
       axios.get("/api/user?id=" + user.id).then((response) => {
         setUserInfo(response.data);
@@ -102,9 +119,9 @@ function Account() {
     localStorage.setItem("approveuser", JSON.stringify(user));
   }
 
-  useEffect(() => {
-    getEvent();
-    getUserInfo();
+  useEffect(async () => {
+    await getEvent();
+    await getUserInfo();
   }, []);
   return (
     <div>
@@ -130,13 +147,42 @@ function Account() {
                           <CardContent>
 
                             <Typography sx={{ mb: 1.5 }}>
-                              Requested by:
-                              <Link to="/userprofile">
-                                <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
-                              </Link>
-                            </Typography>
-                            <Typography sx={{ mb: 1 }}>
-                              User reputation: {request.user.participantReputation}
+                              <div><b>Name: {request.user.fullName}</b></div>
+                              <b>
+                                User reputation: {request.user.participantReputation}
+                              </b>
+                              <div>
+                                <button onClick={(handleOpenNewReview)}>See Reviews</button>
+                                <Modal
+                                  id="reply-modal"
+                                  open={reviewOpen}
+                                  onClose={handleCloseNewReview}
+                                  aria-describedby="modal-modal-description"
+                                >
+                                  <Box sx={style}>
+                                    {request.user && request.user.participantReviews && request.user.participantReviews.length > 0 ? (
+                                      request.user.participantReviews.map((review) => {
+                                        return (
+                                          <Card variant="outlined" sx={{ minWidth: 275 }}>
+                                            <CardContent>
+                                              <Typography variant="h6" component="div">
+                                                <b>Rating</b>  : <b>{review.rating}</b>
+                                              </Typography>
+                                              <Typography variant="h6" component="div">
+                                                <b>{review.event.title}</b>   : {review.text}
+                                              </Typography>
+                                            </CardContent>
+                                          </Card>
+                                        )
+                                      })
+                                    ) : (
+                                      <p>No Participant Reviews</p>
+                                    )
+                                    }
+                                  </Box>
+                                </Modal>
+                              </div>
+
                             </Typography>
                           </CardContent>
                           <CardActions>
@@ -226,7 +272,7 @@ function Account() {
         <div>
           <Stack direction={"row"} spacing={10}>
             <h5>Organizer Reviews</h5>
-            <h5>Organizer Reputation: {userInfo.organizerReputation}</h5>
+            <h5>Organizer Reputation: {userInfo && userInfo.organizerReputation}</h5>
           </Stack>
           {userInfo && userInfo.organizerReviews && userInfo.organizerReviews.length > 0 ? (
             userInfo.organizerReviews.map((review) => {
@@ -251,7 +297,7 @@ function Account() {
         <div>
           <Stack direction={"row"} spacing={10}>
             <h5>Participant Reviews</h5>
-            <h5>Participant Reputation: {userInfo.participantReputation}</h5>
+            <h5>Participant Reputation: {userInfo && userInfo.participantReputation}</h5>
           </Stack>
 
           {userInfo && userInfo.participantReputation && userInfo.participantReputation.length > 0 ? (
@@ -302,7 +348,7 @@ function Account() {
           <div></div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

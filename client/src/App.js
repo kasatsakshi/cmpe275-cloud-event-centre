@@ -21,6 +21,7 @@ import Account from "./components/Account";
 import UserProfile from "./components/UserProfile";
 import OrganizerProfile from "./components/OrganizerProfile";
 import SystemReport from "./components/SystemReport";
+import UserReport from "./components/UserReport";
 
 function App() {
   const user = useSelector((state) => state.user.currentUser);
@@ -59,10 +60,10 @@ function App() {
             path="/account"
             element={user ? <Account /> : <Navigate to="/" />}
           />
-          <Route
-            path="/userprofile"
+          {/* <Route
+            path="/userprofile/:id"
             element={user ? <UserProfile /> : <Navigate to="/" />}
-          />
+          /> */}
           <Route
             path="/orgprofile"
             element={user ? <OrganizerProfile /> : <Navigate to="/" />}
@@ -70,6 +71,10 @@ function App() {
           <Route
             path="/system-report"
             element={user ? <SystemReport /> : <Navigate to="/" />}
+          />
+           <Route
+            path="/user-report"
+            element={user ? <UserReport /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

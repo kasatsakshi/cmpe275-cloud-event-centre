@@ -21,7 +21,7 @@ import {
 } from "reactstrap";
 import SignUpForum from "./SignUpForum";
 import ParticipantForum from "./ParticipantForum";
-import { height } from "@mui/system";
+import ParticipantReview from "./ParticipantReview";
 
 
 const Button = styled.button`
@@ -297,6 +297,50 @@ function EventPage() {
                   </HeaderNavLink>
                   <hr style={{ margin: "5px" }} />
                 </NavItem>
+                <NavItem className="black">
+                  <HeaderNavLink
+                    style={{
+                      backgroundColor: "#fcfcfc",
+                      color: "black",
+                      fontFamily: `-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
+                      padding: "20px",
+                      cursor: "pointer",
+                    }}
+                    disabled={event.status !== "REGISTRATION_OPEN"}
+                    onClick={() => {
+                      setActiveTab("4");
+                    }}
+                  >
+                    <p
+                      className="black b"
+                      style={{
+                        margin: "auto",
+                        textAlign: "center",
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Add Participant Review
+                    </p>
+                    {event.status !== "REGISTRATION_OPEN" ? (
+                      <p
+                        className="black b"
+                        style={{
+                          margin: "auto",
+                          textAlign: "center",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                          color: "gray",
+                        }}
+                      >
+                        (Closed)
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                  </HeaderNavLink>
+                  <hr style={{ margin: "5px" }} />
+                </NavItem>
               </Nav>
             </Col>
             <Col>
@@ -415,6 +459,9 @@ function EventPage() {
                 </TabPane>
                 <TabPane tabId="3">
                   <ParticipantForum />
+                </TabPane>
+                <TabPane tabId="4">
+                  <ParticipantReview eventData={event} />
                 </TabPane>
               </TabContent>
             </Col>
