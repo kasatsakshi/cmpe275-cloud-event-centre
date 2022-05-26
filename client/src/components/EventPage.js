@@ -10,6 +10,10 @@ import EventNavbar from "./EventNavbar";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import moment from "moment";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+
 import {
   TabContent,
   TabPane,
@@ -71,6 +75,11 @@ function EventPage() {
   const [reviewOpen, setReviewOpen] = React.useState(false);
   const handleOpenNewReview = () => setReviewOpen(true);
   const handleCloseNewReview = () => setReviewOpen(false);
+
+  const [orgReviewOpen, setOrgReviewOpen] = React.useState(false);
+  const handleOpenOrgReview = () => setOrgReviewOpen(true);
+  const handleCloseOrgReview = () => setOrgReviewOpen(false);
+
 
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewMessage, setReviewMessage] = useState("");
@@ -356,6 +365,38 @@ function EventPage() {
                         <b>Organized By</b> {event.creator.screenName}
                         <div className="event-start event-text">
                           <em>Reputation: </em> {event.creator.organizerReputation}
+                        </div>
+                        <br />
+                        <div>
+                          <button onClick={(handleOpenOrgReview)}>See Organizer Reviews</button>
+                          <Modal
+                            id="reply-modal"
+                            open={orgReviewOpen}
+                            onClose={handleCloseOrgReview}
+                            aria-describedby="modal-modal-description"
+                          >
+                            <Box sx={style}>
+                              {event.creator && event.creator.organizerReviews && event.creator.organizerReviews.length > 0 ? (
+                                event.creator.organizerReviews.map((review) => {
+                                  return (
+                                    <Card variant="outlined" sx={{ minWidth: 275, marginTop: 2 }}>
+                                      <CardContent>
+                                        <Typography variant="h6" component="div">
+                                          <b>Rating</b>  : <b>{review.rating}</b>
+                                        </Typography>
+                                        <Typography variant="h6" component="div">
+                                          <b>{review.event.title}</b>   : {review.text}
+                                        </Typography>
+                                      </CardContent>
+                                    </Card>
+                                  )
+                                })
+                              ) : (
+                                <p>No Organizer Reviews</p>
+                              )
+                              }
+                            </Box>
+                          </Modal>
                         </div>
                       </div>
                       <div
