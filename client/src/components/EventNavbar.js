@@ -103,6 +103,15 @@ function EventNavbar() {
               System Report
             </Link>
           </li>
+          <li className="nav-item">
+            <Link
+              to="/user-report"
+              className="nav-link"
+              style={{ height: "100%", margin: "10px", color: "white" }}
+            >
+              User Report
+            </Link>
+          </li>
         </ul>
       </nav>
       <nav>

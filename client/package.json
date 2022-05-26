@@ -32,6 +32,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "reactstrap": "^9.0.2",
+    "recharts": "^2.1.10",
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
@@ -62,7 +63,6 @@
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
-  "devDependencies": {},
   "author": "",
   "license": "ISC",
   "proxy": "http://127.0.0.1:8080"
