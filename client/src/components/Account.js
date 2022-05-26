@@ -10,6 +10,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { Stack } from "@mui/material";
 
 const Button = styled.button`
   width: 100px;
@@ -30,7 +31,8 @@ function Account() {
   const user = useSelector((state) => state.user.currentUser);
   const [recieved, setRecieved] = useState([]);
   const [pending, setPending] = useState("");
-  const [events,setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [userInfo, setUserInfo] = useState();
 
   const approve = (id) => {
     axios
@@ -55,16 +57,15 @@ function Account() {
   function getEvent() {
     try {
       axios.get("/api/user/recievedrequests/" + user.id).then((response) => {
-        console.log(response.data);
         setRecieved(response.data);
-        var groupBy = function(xs, key,tit) {
-          return xs.reduce(function(rv, x) {
+        var groupBy = function (xs, key, tit) {
+          return xs.reduce(function (rv, x) {
             (rv[x[key][tit]] = rv[x[key][tit]] || []).push(x);
             return rv;
           }, {});
         };
-       
-        setEvents(groupBy(response.data, 'event','title'));
+
+        setEvents(groupBy(response.data, 'event', 'title'));
       });
 
       axios.get("/api/user/signuprequests/" + user.id).then((response) => {
@@ -73,26 +74,37 @@ function Account() {
     } catch (error) {
       console.log(error);
     }
-    finally{
+    finally {
     }
   }
 
-  function groupfunc(){
-    var groupBy = function(xs, key,tit) {
-      return xs.reduce(function(rv, x) {
+  function getUserInfo() {
+    try {
+      axios.get("/api/user?id=" + user.id).then((response) => {
+        setUserInfo(response.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function groupfunc() {
+    var groupBy = function (xs, key, tit) {
+      return xs.reduce(function (rv, x) {
         (rv[x[key][tit]] = rv[x[key][tit]] || []).push(x);
         return rv;
       }, {});
     };
-    setEvents(groupBy(recieved, 'event','title'));
+    setEvents(groupBy(recieved, 'event', 'title'));
   }
 
-  const userpage = (user) =>{
-    localStorage.setItem("approveuser",JSON.stringify(user));
+  const userpage = (user) => {
+    localStorage.setItem("approveuser", JSON.stringify(user));
   }
 
   useEffect(() => {
     getEvent();
+    getUserInfo();
   }, []);
   return (
     <div>
@@ -108,51 +120,54 @@ function Account() {
               <Card key={key}>
                 <CardContent>
                   <Typography variant="body2" color="text.secondary">
-                    
+
                     <Typography variant="h5" component="div">
                       {key}
                     </Typography>
                     {value.map((request) => {
-              return (
-                <Card variant="outlined" sx={{ minWidth: 275 }}>
-                  <CardContent>
-                    
-                    <Typography sx={{ mb: 1.5 }}>
-                      Requested by: 
-                      <Link to="/userprofile">
-                      <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
-                      </Link>
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    {request.status === "PENDING" ? (
-                      <>
-                        <Button
-                          disabled={request.status != "PENDING"}
-                          size="small"
-                          onClick={() => approve(request.id)}
-                        >
-                          Approve
-                        </Button>
-                        <Button
-                          size="small"
-                          disabled={request.status != "PENDING"}
-                          onClick={() => reject(request.id)}
-                        >
-                          Reject
-                        </Button>
-                      </>
-                    ) : (
-                      <CardContent>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                          {request.status}
-                        </Typography>
-                      </CardContent>
-                    )}
-                  </CardActions>
-                </Card>
-              );
-            })}
+                      return (
+                        <Card variant="outlined" sx={{ minWidth: 275 }}>
+                          <CardContent>
+
+                            <Typography sx={{ mb: 1.5 }}>
+                              Requested by:
+                              <Link to="/userprofile">
+                                <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
+                              </Link>
+                            </Typography>
+                            <Typography sx={{ mb: 1 }}>
+                              User reputation: {request.user.participantReputation}
+                            </Typography>
+                          </CardContent>
+                          <CardActions>
+                            {request.status === "PENDING" ? (
+                              <>
+                                <Button
+                                  disabled={request.status != "PENDING"}
+                                  size="small"
+                                  onClick={() => approve(request.id)}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="small"
+                                  disabled={request.status != "PENDING"}
+                                  onClick={() => reject(request.id)}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            ) : (
+                              <CardContent>
+                                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                  {request.status}
+                                </Typography>
+                              </CardContent>
+                            )}
+                          </CardActions>
+                        </Card>
+                      );
+                    })}
                   </Typography>
                 </CardContent>
               </Card>
@@ -208,6 +223,57 @@ function Account() {
           <div></div>
         )}
 
+        <div>
+          <Stack direction={"row"} spacing={10}>
+            <h5>Organizer Reviews</h5>
+            <h5>Organizer Reputation: {userInfo.organizerReputation}</h5>
+          </Stack>
+          {userInfo && userInfo.organizerReviews && userInfo.organizerReviews.length > 0 ? (
+            userInfo.organizerReviews.map((review) => {
+              return (
+                <Card variant="outlined" sx={{ minWidth: 275 }}>
+                  <CardContent>
+                    <Typography variant="h6" component="div">
+                      <b>{review.text}</b>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              );
+            })
+          ) : (
+            <div>No Organizer Reviews</div>
+          )
+          }
+        </div>
+
+        <p>-----------------------------------------------</p>
+
+        <div>
+          <Stack direction={"row"} spacing={10}>
+            <h5>Participant Reviews</h5>
+            <h5>Participant Reputation: {userInfo.participantReputation}</h5>
+          </Stack>
+
+          {userInfo && userInfo.participantReputation && userInfo.participantReputation.length > 0 ? (
+            userInfo.participantReputation.map((review) => {
+              return (
+                <Card variant="outlined" sx={{ minWidth: 275 }}>
+                  <CardContent>
+                    <Typography variant="h6" component="div">
+                      <b>{review.text}</b>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              );
+            })
+          ) : (
+            <div>No Participant Reviews</div>
+          )
+          }
+        </div>
+
+        <p>-----------------------------------------------</p>
+
         {pending && pending.length > 0 ? (
           <div className="account-divs">
             <h5>Requests Sent for Approval</h5>
@@ -221,7 +287,7 @@ function Account() {
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       Organizer :
                       <Link to="/orgprofile">
-                      <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
+                        <a onClick={(e) => userpage(request.user)}>{request.user.fullName}</a>
                       </Link>
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">

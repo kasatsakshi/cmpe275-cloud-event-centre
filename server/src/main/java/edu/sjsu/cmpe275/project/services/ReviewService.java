@@ -36,6 +36,7 @@ public class ReviewService {
 	@Autowired
 	NotificationService notificationService;
 
+	@Autowired
 	private EmailTemplates emailTemplates;
 
 	/**

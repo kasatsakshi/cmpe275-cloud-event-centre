@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 import "./EventPage.css";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Rating from "@mui/material/Rating"
 import { useNavigate } from "react-router-dom";
 import EventNavbar from "./EventNavbar";
 import { useSelector } from "react-redux";
@@ -18,6 +21,8 @@ import {
 } from "reactstrap";
 import SignUpForum from "./SignUpForum";
 import ParticipantForum from "./ParticipantForum";
+import { height } from "@mui/system";
+
 
 const Button = styled.button`
   width: 200px;
@@ -33,6 +38,25 @@ const Button = styled.button`
   }
 `;
 
+const Input = styled.textarea`
+  width: 100%;
+  height: 60%;
+  margin: 10px 0;
+`;
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  height: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function EventPage() {
   const user = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
@@ -43,6 +67,14 @@ function EventPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState("1");
   const navigate = useNavigate();
+
+  const [reviewOpen, setReviewOpen] = React.useState(false);
+  const handleOpenNewReview = () => setReviewOpen(true);
+  const handleCloseNewReview = () => setReviewOpen(false);
+
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewMessage, setReviewMessage] = useState("");
+
 
   function getEvent() {
     try {
@@ -58,6 +90,34 @@ function EventPage() {
       console.log(error);
       setLoading(false);
     }
+  }
+
+  function checkParticipant(user) {
+    const exists = event.participants.filter(function (participant) {
+      return participant.id === user.id
+    }).length > 0;
+
+    return exists;
+  }
+
+  function submitReview() {
+    axios
+      .post(`/api/review/organizer`, {
+        userId: user.id,
+        eventId: event.id,
+        text: reviewMessage,
+        rating: reviewRating
+      })
+      .then((response) => {
+        console.log(response)
+        handleCloseNewReview();
+        window.location.reload();
+      })
+      .catch((err) => {
+        setShowError(true);
+        setErrorMessage(err.response.data.message);
+        handleCloseNewReview();
+      });
   }
 
   useEffect(() => {
@@ -250,6 +310,9 @@ function EventPage() {
                       </div>
                       <div className="event-owner event-text">
                         <b>Organized By</b> {event.creator.screenName}
+                        <div className="event-start event-text">
+                          <em>Reputation: </em> {event.creator.organizerReputation}
+                        </div>
                       </div>
                       <div
                         className="event-date event-text"
@@ -294,6 +357,43 @@ function EventPage() {
                       >
                         Sign Up
                       </Button>
+                      {checkParticipant(user) ? (
+                        <Button
+                          disabled={event.status !== "REGISTRATION_OPEN"}
+                          className="event-button"
+                          onClick={(handleOpenNewReview)}
+                        >
+                          Add Review
+                        </Button>
+
+                      ) : <div />
+                      }
+                      <Modal
+                        id="reply-modal"
+                        open={reviewOpen}
+                        onClose={handleCloseNewReview}
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          <Rating
+                            name="simple-controlled"
+                            size="large"
+                            onChange={(event, newValue) => {
+                              setReviewRating(newValue);
+                            }}
+                          />
+                          <Input
+                            autoFocus
+                            placeholder="Add your review here"
+                            onChange={(e) => {
+                              setReviewMessage(e.target.value)
+                            }}
+                          />
+                          <button className="forum-buttons" onClick={() => submitReview()}>
+                            Submit
+                          </button>
+                        </Box>
+                      </Modal>
                       {/* <Button
                         className="event-button"
                         onClick={() => navigate("/signup-forum")}
