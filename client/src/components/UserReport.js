@@ -23,9 +23,10 @@ function UserReport() {
         const date = moment(mimicDate).format("YYYY-MM-DD");
         const hourMinute = moment(mimicDate).format("HH:mm");
         const time = date + "T" + hourMinute;
-
+        
+        var userid = currentUser.id;
         axios
-          .get("/api/report/user/3", {
+          .get(`/api/report/user/${userid}`, {
             params: {
               id:currentUser.id,
               time:time
