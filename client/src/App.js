@@ -59,10 +59,10 @@ function App() {
             path="/account"
             element={user ? <Account /> : <Navigate to="/" />}
           />
-          <Route
-            path="/userprofile"
+          {/* <Route
+            path="/userprofile/:id"
             element={user ? <UserProfile /> : <Navigate to="/" />}
-          />
+          /> */}
           <Route
             path="/orgprofile"
             element={user ? <OrganizerProfile /> : <Navigate to="/" />}
