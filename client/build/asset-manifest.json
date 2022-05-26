@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.7130c625.css",
-    "main.js": "/static/js/main.e251346e.js",
+    "main.js": "/static/js/main.abe90a27.js",
     "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
     "static/media/eventcloudlogo.png": "/static/media/eventcloudlogo.d81ba4d8a2ea52956656.png",
     "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/index.html",
     "main.7130c625.css.map": "/static/css/main.7130c625.css.map",
-    "main.e251346e.js.map": "/static/js/main.e251346e.js.map",
+    "main.abe90a27.js.map": "/static/js/main.abe90a27.js.map",
     "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7130c625.css",
-    "static/js/main.e251346e.js"
+    "static/js/main.abe90a27.js"
   ]
 }
