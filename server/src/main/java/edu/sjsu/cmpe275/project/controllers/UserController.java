@@ -127,7 +127,7 @@ public class UserController {
 	@GetMapping(path = { "/verify" }, params = { "code" })
 	public ResponseEntity<?> verifyUser(@RequestParam String code) {
 		if (userService.verify(code)) {
-			return ResponseEntity.status(302).location(URI.create("http://localhost:3000/")).build();
+			return ResponseEntity.status(302).location(URI.create("/")).build();
 		} else {
 			return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(
 					"{\"message\":\"Sorry, we could not verify your account. It may already be verified, or verification code is incorrect.\"}");
